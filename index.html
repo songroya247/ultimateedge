@@ -743,7 +743,42 @@
     <a href="/about" class="btn-secondary">About the Site</a>
   </div>
 </div>
+<div class="email-capture" style="max-width:900px;margin:0 auto 80px;padding:0 40px;">
 
+  <div class="ec-label">Free Gift</div>
+  <h2 class="ec-title">Get <em>10 Viral Prompts</em> Delivered Right Now</h2>
+  <p class="ec-sub">Join creators who get our weekly prompt drops, AI tutorials, and early tool access — starting with 10 hand-picked prompts instantly.</p>
+
+  <div class="ec-perks">
+    <div class="ec-perk"><span class="ec-perk-icon">⚡</span><span>10 hand-crafted viral prompts delivered instantly</span></div>
+    <div class="ec-perk"><span class="ec-perk-icon">📬</span><span>Weekly prompt drops every Monday morning</span></div>
+    <div class="ec-perk"><span class="ec-perk-icon">🔑</span><span>Early access to new tools before anyone else</span></div>
+    <div class="ec-perk"><span class="ec-perk-icon">🚫</span><span>No spam, ever. Unsubscribe in one click.</span></div>
+  </div>
+
+  <div class="ec-form-wrap" id="ecFormWrap">
+    <form class="ec-form" onsubmit="handleSubscribe(event)">
+      <input class="ec-input" type="email" placeholder="your@email.com" required id="ecEmail"/>
+      <button class="ec-btn" type="submit">Send Me the Prompts →</button>
+    </form>
+    <p class="ec-fine">100% free · No credit card · Unsubscribe anytime</p>
+  </div>
+
+  <div class="ec-success" id="ecSuccess">
+    <div class="ec-success-icon">✓</div>
+    <div class="ec-success-title">You're In!</div>
+    <p class="ec-success-msg">Check your inbox — your 10 prompts are on their way.</p>
+  </div>
+
+</div>
+
+<script>
+function handleSubscribe(e) {
+  e.preventDefault();
+  document.getElementById('ecFormWrap').classList.add('hidden');
+  document.getElementById('ecSuccess').classList.add('shown');
+}
+</script>
 <!-- FOOTER -->
 <footer>
   <a href="/" class="footer-logo">Ultimate<span>Edge</span></a>
