@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Capture — UltimateEdge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── PASTE THIS ENTIRE <style> BLOCK INTO YOUR SITE'S CSS ── */
+  :root {
+    --accent: #e8ff47;
+    --bg: #080a0f;
+    --surface: #0e1117;
+    --surface2: #151821;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0f2f7;
+    --muted: #6b7280;
+    --muted2: #8892a4;
+  }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 40px 20px;
+  }
+
+  /* ════════════════════════════════════════
+     EMAIL CAPTURE SECTION
+     Paste everything below into index.html
+     just above your </body> tag
+  ════════════════════════════════════════ */
+
+  .email-capture {
+    position: relative;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 64px 56px;
+    max-width: 680px;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  /* top glow */
+  .email-capture::before {
+    content: '';
+    position: absolute; top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 400px; height: 200px;
+    background: radial-gradient(ellipse, rgba(232,255,71,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* decorative corner lines */
+  .email-capture::after {
+    content: '';
+    position: absolute; bottom: 0; right: 0;
+    width: 160px; height: 160px;
+    border-top: 1px solid rgba(232,255,71,0.1);
+    border-left: 1px solid rgba(232,255,71,0.1);
+    border-radius: 0 0 20px 0;
+    transform: rotate(180deg);
+    pointer-events: none;
+  }
+
+  .ec-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 16px; position: relative;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+
+  .ec-label::before,
+  .ec-label::after {
+    content: ''; display: block;
+    width: 40px; height: 1px; background: rgba(232,255,71,0.3);
+  }
+
+  .ec-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: 0.04em; line-height: 1;
+    margin-bottom: 14px; position: relative;
+  }
+
+  .ec-title em { font-style: normal; color: var(--accent); }
+
+  .ec-sub {
+    font-size: 0.92rem; color: var(--muted2);
+    font-weight: 300; line-height: 1.7;
+    max-width: 420px; margin: 0 auto 32px;
+    position: relative;
+  }
+
+  /* perks list */
+  .ec-perks {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 36px; text-align: left;
+    max-width: 360px; margin-left: auto; margin-right: auto;
+    position: relative;
+  }
+
+  .ec-perk {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 0.86rem;
+  }
+
+  .ec-perk-icon {
+    color: var(--accent); flex-shrink: 0;
+    margin-top: 1px; font-size: 0.9rem;
+  }
+
+  /* form */
+  .ec-form {
+    display: flex; gap: 10px;
+    position: relative; max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .ec-input {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 20px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .ec-input::placeholder { color: var(--muted); }
+
+  .ec-input:focus {
+    border-color: rgba(232,255,71,0.4);
+    box-shadow: 0 0 0 3px rgba(232,255,71,0.06);
+  }
+
+  .ec-btn {
+    background: var(--accent);
+    color: #080a0f;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700; font-size: 0.88rem;
+    letter-spacing: 0.04em;
+    padding: 14px 24px;
+    border: none; border-radius: 8px;
+    cursor: pointer; white-space: nowrap;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  }
+
+  .ec-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(232,255,71,0.25);
+  }
+
+  .ec-btn:active { transform: translateY(0); }
+
+  .ec-fine {
+    margin-top: 16px;
+    font-size: 0.75rem; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em; position: relative;
+  }
+
+  /* success state */
+  .ec-success {
+    display: none;
+    flex-direction: column; align-items: center; gap: 12px;
+    position: relative;
+  }
+
+  .ec-success-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(232,255,71,0.1);
+    border: 1px solid rgba(232,255,71,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    animation: pop 0.4s ease;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .ec-success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 0.06em; color: var(--accent);
+  }
+
+  .ec-success-msg { font-size: 0.88rem; color: var(--muted2); font-weight: 300; }
+
+  /* shown class */
+  .ec-form-wrap.hidden { display: none; }
+  .ec-success.shown { display: flex; }
+
+  @media (max-width: 500px) {
+    .email-capture { padding: 40px 24px; }
+    .ec-form { flex-direction: column; }
+    .ec-btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!--
+  ══════════════════════════════════════════════════════
+  PASTE THIS ENTIRE BLOCK INTO YOUR index.html
+  Place it just above the FOOTER section
+  ══════════════════════════════════════════════════════
+-->
+<div class="email-capture">
+
+  <div class="ec-label">Free Gift</div>
+
+  <h2 class="ec-title">Get <em>10 Viral Prompts</em><br>Delivered Right Now</h2>
+
+  <p class="ec-sub">
+    Join creators who get our weekly prompt drops, AI tutorials, and early tool access — starting with 10 hand-picked prompts instantly.
+  </p>
+
+  <div class="ec-perks">
+    <div class="ec-perk">
+      <span class="ec-perk-icon">⚡</span>
+      <span>10 hand-crafted viral prompts delivered instantly</span>
+    </div>
+    <div class="ec-perk">
+      <span class="ec-perk-icon">📬</span>
+      <span>Weekly prompt drops every Monday morning</span>
+    </div>
+    <div class="ec-perk">
+      <span class="ec-perk-icon">🔑</span>
+      <span>Early access to new tools before anyone else</span>
+    </div>
+    <div class="ec-perk">
+      <span class="ec-perk-icon">🚫</span>
+      <span>No spam, ever. Unsubscribe in one click.</span>
+    </div>
+  </div>
+
+  <!-- FORM STATE -->
+  <div class="ec-form-wrap" id="ecFormWrap">
+    <form class="ec-form" onsubmit="handleSubscribe(event)">
+      <input
+        class="ec-input"
+        type="email"
+        placeholder="your@email.com"
+        required
+        id="ecEmail"
+      />
+      <!--
+        TO CONNECT CONVERTKIT:
+        1. Go to convertkit.com → Forms → Create Form
+        2. Copy your form's action URL
+        3. Replace the onsubmit handler below with a fetch() POST to that URL
+        See the JS comment block at the bottom for the full ConvertKit code
+      -->
+      <button class="ec-btn" type="submit">Send Me the Prompts →</button>
+    </form>
+    <p class="ec-fine">100% free · No credit card · Unsubscribe anytime</p>
+  </div>
+
+  <!-- SUCCESS STATE -->
+  <div class="ec-success" id="ecSuccess">
+    <div class="ec-success-icon">✓</div>
+    <div class="ec-success-title">You're In!</div>
+    <p class="ec-success-msg">Check your inbox — your 10 prompts are on their way. Welcome to UltimateEdge.</p>
+  </div>
+
+</div>
+<!--
+  ══════════════════════════════════════════════════════
+  END OF EMAIL CAPTURE BLOCK
+  ══════════════════════════════════════════════════════
+-->
+
+<script>
+/*
+  ══════════════════════════════════════════════════════
+  OPTION A — Simple demo (shows success UI, no real email sent)
+  Use this to test the design works, then swap for Option B
+  ══════════════════════════════════════════════════════
+*/
+function handleSubscribe(e) {
+  e.preventDefault();
+  document.getElementById('ecFormWrap').classList.add('hidden');
+  document.getElementById('ecSuccess').classList.add('shown');
+}
+
+/*
+  ══════════════════════════════════════════════════════
+  OPTION B — Real ConvertKit integration
+  Replace handleSubscribe above with this once you have
+  your ConvertKit form ID and API key set up.
+
+  Steps:
+  1. Sign up at convertkit.com (free up to 10,000 subscribers)
+  2. Create a Form → give it a name like "UltimateEdge Signup"
+  3. Go to Settings → Advanced → get your API key
+  4. Copy your Form ID from the form URL
+  5. Paste your FORM_ID below and deploy
+
+  async function handleSubscribe(e) {
+    e.preventDefault();
+    const email = document.getElementById('ecEmail').value;
+    const FORM_ID = 'YOUR_CONVERTKIT_FORM_ID_HERE';
+
+    try {
+      const res = await fetch(`https://api.convertkit.com/v3/forms/${FORM_ID}/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: 'YOUR_CONVERTKIT_PUBLIC_API_KEY',
+          email: email
+        })
+      });
+
+      if (res.ok) {
+        document.getElementById('ecFormWrap').classList.add('hidden');
+        document.getElementById('ecSuccess').classList.add('shown');
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      alert('Connection error. Please try again.');
+    }
+  }
+  ══════════════════════════════════════════════════════
+*/
+</script>
+
+</body>
+</html>
