@@ -222,7 +222,10 @@
   .ec-perk { display: flex; align-items: flex-start; gap: 12px; font-size: 0.88rem; }
   .ec-perk-icon { color: var(--accent); flex-shrink: 0; margin-top: 1px; }
   .ec-form {
-    display: flex; gap: 10px; max-width: 500px; margin: 0 auto; position: relative;
+    display: flex; flex-direction: column; gap: 12px; max-width: 500px; margin: 0 auto; position: relative;
+  }
+  .ec-form-row {
+    display: flex; gap: 10px;
   }
   .ec-input {
     flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
@@ -438,6 +441,7 @@
 
     <div class="ec-form-wrap" id="ecFormWrap">
       <form class="ec-form" onsubmit="handleSubscribe(event)">
+        <input class="ec-input" type="text" placeholder="Your first name" required id="ecName"/>
         <input class="ec-input" type="email" placeholder="your@email.com" required id="ecEmail"/>
         <button class="ec-btn" type="submit" id="ecBtn">Send Me the Prompts →</button>
       </form>
@@ -489,6 +493,7 @@
 
   async function handleSubscribe(e) {
     e.preventDefault();
+    var name = document.getElementById('ecName').value;
     var email = document.getElementById('ecEmail').value;
     var btn = document.getElementById('ecBtn');
     var errorEl = document.getElementById('ecError');
@@ -498,17 +503,17 @@
     errorEl.classList.remove('shown');
 
     try {
-      // Use no-cors to avoid CORS block — Google Sheets still receives the data
       await fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        body: JSON.stringify({ email: email }),
+        body: JSON.stringify({ name: name, email: email }),
         headers: { 'Content-Type': 'application/json' }
       });
 
-      // no-cors means we can't read the response, but data is saved — show success
       document.getElementById('ecFormWrap').classList.add('hidden');
       document.getElementById('ecSuccess').classList.add('shown');
+      document.querySelector('.ec-success-msg').textContent =
+        'Welcome ' + name + '! Check your inbox — your 10 prompts are on their way.';
 
     } catch (err) {
       btn.disabled = false;
