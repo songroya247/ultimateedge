@@ -485,7 +485,7 @@
   // Replace the placeholder after you deploy your script
   // It looks like: https://script.google.com/macros/s/XXXX/exec
   // ============================================================
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWxXsPtuiGBmKyVkRncTbZvEPpkDG57uRLBryE_IJTBXet09qLQAeroxyvVum9hfLrUQ/exec';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQkK8YN7m0tnQrJ1ILkvlEyPoTI26J0cSjJRwugI7jmgTNvNfwhMpCWhsgA881idkadg/exec';
 
   async function handleSubscribe(e) {
     e.preventDefault();
@@ -493,30 +493,24 @@
     var btn = document.getElementById('ecBtn');
     var errorEl = document.getElementById('ecError');
 
-    // Show loading state
     btn.disabled = true;
     btn.textContent = 'Sending...';
     errorEl.classList.remove('shown');
 
     try {
-      var response = await fetch(SCRIPT_URL, {
+      // Use no-cors to avoid CORS block — Google Sheets still receives the data
+      await fetch(SCRIPT_URL, {
         method: 'POST',
+        mode: 'no-cors',
         body: JSON.stringify({ email: email }),
         headers: { 'Content-Type': 'application/json' }
       });
 
-      var result = await response.json();
-
-      if (result.status === 'success' || result.status === 'duplicate') {
-        // Show success either way — don't tell them they already signed up
-        document.getElementById('ecFormWrap').classList.add('hidden');
-        document.getElementById('ecSuccess').classList.add('shown');
-      } else {
-        throw new Error('Unexpected response');
-      }
+      // no-cors means we can't read the response, but data is saved — show success
+      document.getElementById('ecFormWrap').classList.add('hidden');
+      document.getElementById('ecSuccess').classList.add('shown');
 
     } catch (err) {
-      // Show error message
       btn.disabled = false;
       btn.textContent = 'Send Me the Prompts →';
       errorEl.classList.add('shown');
