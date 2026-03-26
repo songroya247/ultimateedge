@@ -239,7 +239,10 @@
     transition: transform 0.2s, box-shadow 0.2s;
   }
   .ec-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(232,255,71,0.25); }
+  .ec-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
   .ec-fine { margin-top: 14px; font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 0.04em; position: relative; }
+  .ec-error { margin-top: 10px; font-size: 0.82rem; color: #ff6b47; display: none; }
+  .ec-error.shown { display: block; }
   .ec-success { display: none; flex-direction: column; align-items: center; gap: 14px; position: relative; }
   .ec-success-icon {
     width: 60px; height: 60px; border-radius: 50%;
@@ -250,6 +253,8 @@
   @keyframes pop { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
   .ec-success-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.06em; color: var(--accent); }
   .ec-success-msg { font-size: 0.9rem; color: var(--muted2); font-weight: 300; }
+  .ec-duplicate { display: none; flex-direction: column; align-items: center; gap: 10px; }
+  .ec-duplicate.shown { display: flex; }
   .ec-form-wrap.hidden { display: none; }
   .ec-success.shown { display: flex; }
 
@@ -430,13 +435,16 @@
       <div class="ec-perk"><span class="ec-perk-icon">🔑</span><span>Early access to new tools before anyone else</span></div>
       <div class="ec-perk"><span class="ec-perk-icon">🚫</span><span>No spam, ever. Unsubscribe in one click.</span></div>
     </div>
+
     <div class="ec-form-wrap" id="ecFormWrap">
       <form class="ec-form" onsubmit="handleSubscribe(event)">
         <input class="ec-input" type="email" placeholder="your@email.com" required id="ecEmail"/>
-        <button class="ec-btn" type="submit">Send Me the Prompts →</button>
+        <button class="ec-btn" type="submit" id="ecBtn">Send Me the Prompts →</button>
       </form>
       <p class="ec-fine">100% free · No credit card · Unsubscribe anytime</p>
+      <p class="ec-error" id="ecError">Something went wrong. Please try again.</p>
     </div>
+
     <div class="ec-success" id="ecSuccess">
       <div class="ec-success-icon">✓</div>
       <div class="ec-success-title">You're In!</div>
@@ -472,11 +480,50 @@
 </footer>
 
 <script>
-  function handleSubscribe(e) {
+  // ============================================================
+  // PASTE YOUR GOOGLE APPS SCRIPT URL BELOW
+  // Replace the placeholder after you deploy your script
+  // It looks like: https://script.google.com/macros/s/XXXX/exec
+  // ============================================================
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWxXsPtuiGBmKyVkRncTbZvEPpkDG57uRLBryE_IJTBXet09qLQAeroxyvVum9hfLrUQ/exec';
+
+  async function handleSubscribe(e) {
     e.preventDefault();
-    document.getElementById('ecFormWrap').classList.add('hidden');
-    document.getElementById('ecSuccess').classList.add('shown');
+    var email = document.getElementById('ecEmail').value;
+    var btn = document.getElementById('ecBtn');
+    var errorEl = document.getElementById('ecError');
+
+    // Show loading state
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    errorEl.classList.remove('shown');
+
+    try {
+      var response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ email: email }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      var result = await response.json();
+
+      if (result.status === 'success' || result.status === 'duplicate') {
+        // Show success either way — don't tell them they already signed up
+        document.getElementById('ecFormWrap').classList.add('hidden');
+        document.getElementById('ecSuccess').classList.add('shown');
+      } else {
+        throw new Error('Unexpected response');
+      }
+
+    } catch (err) {
+      // Show error message
+      btn.disabled = false;
+      btn.textContent = 'Send Me the Prompts →';
+      errorEl.classList.add('shown');
+    }
   }
+
+  // Scroll reveal
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
