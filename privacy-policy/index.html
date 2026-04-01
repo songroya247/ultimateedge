@@ -3,356 +3,150 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — UltimateEdge</title>
-<meta name="description" content="UltimateEdge is a free digital toolkit for content creators, traders and modern thinkers. Built by Solomon in Nigeria.">
+<title>Privacy Policy — UltimateEdge</title>
+<meta name="description" content="Privacy Policy for UltimateEdge.info — how we collect, use and protect your data.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://ultimateedge.info/about">
+<link rel="canonical" href="https://ultimateedge.info/privacy-policy">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#080a0f;--surface:#0e1117;--surface2:#151821;--border:rgba(255,255,255,0.07);--accent:#e8ff47;--accent2:#47c8ff;--text:#f0f2f7;--muted:#6b7280;--muted2:#8892a4}
+:root{--bg:#080a0f;--surface:#0e1117;--surface2:#151821;--border:rgba(255,255,255,0.07);--accent:#e8ff47;--text:#f0f2f7;--muted:#6b7280;--muted2:#8892a4}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.7;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4}
-
-/* NAV */
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(8,10,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.12em;color:var(--text);text-decoration:none}
 .nav-logo span{color:var(--accent)}
-.nav-links{display:flex;align-items:center;gap:24px;list-style:none}
-.nav-links a{color:var(--muted2);text-decoration:none;font-size:0.83rem;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;transition:color .2s}
-.nav-links a:hover{color:var(--text)}
-.nav-cta{background:var(--accent)!important;color:#080a0f!important;padding:7px 16px;border-radius:4px;font-weight:700!important}
-
-/* HERO */
-.about-hero{padding:100px 40px 80px;max-width:1000px;margin:0 auto;position:relative}
-.about-hero::before{content:'';position:absolute;top:-60px;right:-40px;width:500px;height:400px;background:radial-gradient(ellipse,rgba(232,255,71,0.05) 0%,transparent 70%);pointer-events:none}
-.hero-tag{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.hero-tag::before{content:'';display:block;width:24px;height:1px;background:var(--accent)}
-.about-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,8vw,6.5rem);line-height:0.92;letter-spacing:0.02em;margin-bottom:28px}
-.about-title em{font-style:normal;color:var(--accent)}
-.about-intro{font-size:1.1rem;color:var(--muted2);font-weight:300;max-width:600px;line-height:1.8;margin-bottom:0}
-.about-intro strong{color:var(--text);font-weight:500}
-
-/* STORY SECTION */
-.story-section{max-width:1000px;margin:0 auto;padding:0 40px 80px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-.story-left .section-tag{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.story-left .section-tag::after{content:'';display:block;width:40px;height:1px;background:rgba(232,255,71,0.4)}
-.story-left h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,3vw,2.8rem);letter-spacing:0.04em;line-height:1;margin-bottom:20px}
-.story-left p{color:var(--muted2);font-weight:300;font-size:0.97rem;margin-bottom:16px;line-height:1.8}
-.story-left p strong{color:var(--text);font-weight:600}
-.story-right{display:flex;flex-direction:column;gap:16px;padding-top:8px}
-
-/* STAT CARDS */
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 28px;position:relative;overflow:hidden;transition:background .2s}
-.stat-card:hover{background:var(--surface2)}
-.stat-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--card-accent,var(--accent))}
-.stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:0.04em;color:var(--card-accent,var(--accent));line-height:1;margin-bottom:4px}
-.stat-label{font-size:0.83rem;color:var(--muted2);font-weight:300}
-
-/* MISSION */
-.mission-section{max-width:1000px;margin:0 auto;padding:0 40px 80px}
-.mission-card{background:var(--surface2);border:1px solid rgba(232,255,71,0.12);border-radius:16px;padding:56px 52px;position:relative;overflow:hidden;text-align:center}
-.mission-card::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:300px;background:radial-gradient(ellipse,rgba(232,255,71,0.07) 0%,transparent 70%);pointer-events:none}
-.mission-tag{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;position:relative}
-.mission-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:0.04em;line-height:1;margin-bottom:20px;position:relative}
-.mission-text{font-size:1.05rem;color:var(--muted2);font-weight:300;max-width:560px;margin:0 auto;line-height:1.8;position:relative}
-.mission-text strong{color:var(--text);font-weight:500}
-
-/* VALUES */
-.values-section{max-width:1000px;margin:0 auto;padding:0 40px 80px}
-.values-tag{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.values-tag::after{content:'';display:block;width:40px;height:1px;background:rgba(232,255,71,0.4)}
-.values-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3rem);letter-spacing:0.04em;line-height:1;margin-bottom:40px}
-.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-.value-card{background:var(--surface);padding:32px 28px;transition:background .2s}
-.value-card:hover{background:var(--surface2)}
-.value-icon{font-size:1.8rem;margin-bottom:14px;display:block}
-.value-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.06em;margin-bottom:8px}
-.value-desc{font-size:0.85rem;color:var(--muted2);font-weight:300;line-height:1.6}
-
-/* TOOLS LIST */
-.tools-section{max-width:1000px;margin:0 auto;padding:0 40px 80px}
-.tools-tag{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.tools-tag::after{content:'';display:block;width:40px;height:1px;background:rgba(232,255,71,0.4)}
-.tools-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3rem);letter-spacing:0.04em;line-height:1;margin-bottom:10px}
-.tools-sub{color:var(--muted2);font-weight:300;margin-bottom:36px}
-.tools-list{display:flex;flex-direction:column;gap:10px}
-.tool-row{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 22px;text-decoration:none;color:var(--text);transition:all .2s}
-.tool-row:hover{background:var(--surface2);border-color:rgba(255,255,255,0.12)}
-.tool-row-left{display:flex;align-items:center;gap:14px}
-.tool-row-icon{font-size:1.3rem;flex-shrink:0}
-.tool-row-name{font-weight:600;font-size:0.92rem}
-.tool-row-desc{font-size:0.82rem;color:var(--muted2);margin-top:2px;font-weight:300}
-.tool-row-badge{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:3px;flex-shrink:0}
-.badge-free{background:rgba(71,255,180,0.1);color:#47ffb4;border:1px solid rgba(71,255,180,0.2)}
-.badge-paid{background:rgba(232,255,71,0.1);color:var(--accent);border:1px solid rgba(232,255,71,0.2)}
-.tool-row-arrow{color:var(--muted);flex-shrink:0;transition:transform .2s}
-.tool-row:hover .tool-row-arrow{transform:translateX(4px);color:var(--accent)}
-
-/* CTA */
-.cta-section{max-width:1000px;margin:0 auto;padding:0 40px 100px}
-.cta-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:60px;display:flex;align-items:center;justify-content:space-between;gap:40px;position:relative;overflow:hidden}
-.cta-card::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;background:var(--accent);border-radius:50%;filter:blur(100px);opacity:.06}
-.cta-card h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,3vw,2.8rem);letter-spacing:0.04em;line-height:1;margin-bottom:10px}
-.cta-card p{color:var(--muted2);font-weight:300;max-width:380px}
-.cta-actions{display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap}
-.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#080a0f;font-weight:700;font-size:0.88rem;letter-spacing:0.05em;padding:13px 26px;border-radius:6px;text-decoration:none;transition:all .2s}
-.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
-.btn-secondary{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--muted2);font-weight:500;font-size:0.88rem;padding:13px 22px;border-radius:6px;border:1px solid var(--border);text-decoration:none;transition:all .2s}
-.btn-secondary:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
-
-/* FOOTER */
+.nav-back{color:var(--muted2);text-decoration:none;font-size:0.83rem;display:flex;align-items:center;gap:6px;transition:color .2s}
+.nav-back:hover{color:var(--text)}
+.page-wrap{max-width:760px;margin:0 auto;padding:80px 40px 100px}
+.page-tag{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,6vw,4rem);letter-spacing:0.03em;line-height:1;margin-bottom:12px}
+.page-meta{font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);margin-bottom:48px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.05em;margin:44px 0 14px;color:var(--text);padding-top:16px;border-top:1px solid var(--border)}
+p{color:var(--muted2);margin-bottom:16px;font-weight:300;font-size:0.97rem}
+p strong{color:var(--text);font-weight:600}
+ul{list-style:none;padding:0;margin-bottom:20px;display:flex;flex-direction:column;gap:8px}
+ul li{display:flex;gap:10px;font-size:0.95rem;color:var(--muted2);font-weight:300}
+ul li::before{content:'→';color:var(--accent);flex-shrink:0;font-weight:700}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(232,255,71,0.25)}
+a:hover{border-color:var(--accent)}
+.callout{background:rgba(232,255,71,0.05);border:1px solid rgba(232,255,71,0.15);border-left:3px solid var(--accent);border-radius:8px;padding:18px 22px;margin:24px 0}
+.callout p{margin:0;color:var(--text);font-size:0.92rem}
 footer{border-top:1px solid var(--border);padding:40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
-.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.1em;color:var(--text);text-decoration:none}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.1em;color:var(--text);text-decoration:none;border:none}
 .footer-logo span{color:var(--accent)}
-.footer-links{display:flex;gap:24px;list-style:none}
-.footer-links a{color:var(--muted);text-decoration:none;font-size:0.82rem;transition:color .2s}
-.footer-links a:hover{color:var(--text)}
 .footer-copy{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted)}
-
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
-.reveal.visible{opacity:1;transform:none}
-
-@media(max-width:768px){
-  nav{padding:0 20px}.nav-links{display:none}
-  .about-hero{padding:80px 20px 60px}
-  .story-section{grid-template-columns:1fr;gap:40px;padding:0 20px 60px}
-  .mission-section,.values-section,.tools-section,.cta-section{padding-left:20px;padding-right:20px}
-  .mission-card{padding:40px 24px}
-  .values-grid{grid-template-columns:1fr}
-  .cta-card{flex-direction:column;padding:40px 24px}
-  .cta-actions{width:100%;flex-direction:column}
-  footer{flex-direction:column;align-items:flex-start;padding:32px 20px}
-  .footer-links{flex-wrap:wrap;gap:14px}
-}
+@media(max-width:768px){nav{padding:0 20px}.page-wrap{padding:60px 20px 80px}footer{flex-direction:column;align-items:flex-start;padding:32px 20px}}
 </style>
 </head>
 <body>
-
 <nav>
   <a href="/" class="nav-logo">Ultimate<span>Edge</span></a>
-  <ul class="nav-links">
-    <li><a href="/#tools">Tools</a></li>
-    <li><a href="/articles">Articles</a></li>
-    <li><a href="https://selar.com/7o17517y15" target="_blank">Prompt Pack</a></li>
-    <li><a href="/promptedge-pro" class="nav-cta">Go Pro ⚡</a></li>
-  </ul>
+  <a href="/" class="nav-back">← Back to Home</a>
 </nav>
 
-<!-- HERO -->
-<div class="about-hero reveal">
-  <div class="hero-tag">Our Story</div>
-  <h1 class="about-title">Built for<br>People Who<br><em>Think Fast.</em></h1>
-  <p class="about-intro">
-    UltimateEdge is a <strong>free digital toolkit</strong> for content creators, traders, students, and entrepreneurs who want to work smarter using AI — without paying for overpriced software subscriptions.
-  </p>
-</div>
+<div class="page-wrap">
+  <div class="page-tag">Legal</div>
+  <h1 class="page-title">Privacy Policy</h1>
+  <div class="page-meta">Last updated: April 1, 2026 · UltimateEdge.info</div>
 
-<!-- STORY + STATS -->
-<div class="story-section">
-  <div class="story-left reveal">
-    <div class="section-tag">The Story</div>
-    <h2>Why We Built This</h2>
-    <p>
-      Most AI tools are built for people in Silicon Valley with big budgets. The creators, traders, and students in Africa — people with real ambitions and limited resources — are left behind.
-    </p>
-    <p>
-      UltimateEdge was built to close that gap. Every tool on this site is <strong>free to use, requires no sign-up, and works on any device</strong> — including the phone in your pocket.
-    </p>
-    <p>
-      We started with a simple idea: what if the best AI prompt tools, math calculators, and trading resources were available to everyone — not just people who could afford $50/month subscriptions?
-    </p>
-    <p>
-      That idea became UltimateEdge. Built in Nigeria, used worldwide.
-    </p>
+  <div class="callout">
+    <p><strong>The short version:</strong> We collect only what we need to run this site. We never sell your data. We never share it with advertisers. You are always in control.</p>
   </div>
 
-  <div class="story-right reveal">
-    <div class="stat-card" style="--card-accent:#e8ff47">
-      <div class="stat-num">6+</div>
-      <div class="stat-label">Free tools available right now — more added regularly</div>
-    </div>
-    <div class="stat-card" style="--card-accent:#47c8ff">
-      <div class="stat-num">0</div>
-      <div class="stat-label">Required sign-ups — every free tool works instantly</div>
-    </div>
-    <div class="stat-card" style="--card-accent:#b47fff">
-      <div class="stat-num">50K+</div>
-      <div class="stat-label">AI prompts generated by creators using our tools</div>
-    </div>
-    <div class="stat-card" style="--card-accent:#47ffb4">
-      <div class="stat-num">2026</div>
-      <div class="stat-label">The year we decided to stop waiting and start building</div>
-    </div>
-  </div>
-</div>
+  <h2>Who We Are</h2>
+  <p>UltimateEdge.info is a digital tools and resources website owned and operated by Solomon. We provide free AI tools, educational calculators, trading resources, and digital products for content creators and modern thinkers.</p>
+  <p>If you have any questions about this policy, contact us at: <strong>ultimateedge.info@gmail.com</strong></p>
 
-<!-- MISSION -->
-<div class="mission-section reveal">
-  <div class="mission-card">
-    <div class="mission-tag">Our Mission</div>
-    <h2 class="mission-title">Give Everyone the Edge.</h2>
-    <p class="mission-text">
-      We believe the <strong>best tools should be free</strong>. The internet made information free. AI should make capability free. UltimateEdge exists to make sure that no creator, trader, or student is held back by the tools they can't afford.
-    </p>
-  </div>
-</div>
+  <h2>What Information We Collect</h2>
+  <p>We collect information in the following ways:</p>
 
-<!-- VALUES -->
-<div class="values-section reveal">
-  <div class="values-tag">What We Stand For</div>
-  <h2 class="values-title">Our Values</h2>
-  <div class="values-grid">
-    <div class="value-card">
-      <span class="value-icon">⚡</span>
-      <div class="value-name">Speed First</div>
-      <p class="value-desc">Every tool should give you value in under 60 seconds. If it takes longer than that, we redesign it.</p>
-    </div>
-    <div class="value-card">
-      <span class="value-icon">🚫</span>
-      <div class="value-name">No Gatekeeping</div>
-      <p class="value-desc">Free tools stay free. We will never put basic functionality behind a paywall to force upgrades.</p>
-    </div>
-    <div class="value-card">
-      <span class="value-icon">🌍</span>
-      <div class="value-name">Built for Africa</div>
-      <p class="value-desc">Our tools work on slow connections, older phones, and with Nigerian payment methods. We design for where we are.</p>
-    </div>
-    <div class="value-card">
-      <span class="value-icon">🔒</span>
-      <div class="value-name">Your Data is Yours</div>
-      <p class="value-desc">We never sell your data. What you type into our tools stays private. No ad targeting, ever.</p>
-    </div>
-    <div class="value-card">
-      <span class="value-icon">📈</span>
-      <div class="value-name">Always Improving</div>
-      <p class="value-desc">We add new tools and improve existing ones every month based on what our users actually need.</p>
-    </div>
-    <div class="value-card">
-      <span class="value-icon">💡</span>
-      <div class="value-name">Honest Business</div>
-      <p class="value-desc">When we have something to sell, we tell you clearly. No dark patterns, no fake urgency, no tricks.</p>
-    </div>
-  </div>
-</div>
+  <p><strong>Information you give us directly:</strong></p>
+  <ul>
+    <li>Your name and email address when you sign up for our email list</li>
+    <li>Your email address when you purchase a product through our Selar store</li>
+    <li>Any messages you send us through our contact form</li>
+  </ul>
 
-<!-- TOOLS LIST -->
-<div class="tools-section reveal">
-  <div class="tools-tag">What We Offer</div>
-  <h2 class="tools-title">Everything We've Built</h2>
-  <p class="tools-sub">Every tool below is available right now. No waiting list, no sign-up required.</p>
-  <div class="tools-list">
-    <a href="/prompt-generator" class="tool-row">
-      <div class="tool-row-left">
-        <span class="tool-row-icon">⚡</span>
-        <div>
-          <div class="tool-row-name">AI Prompt Generator</div>
-          <div class="tool-row-desc">Generate perfect prompts for ChatGPT, Claude, and Gemini across 8 categories</div>
-        </div>
-      </div>
-      <span class="tool-row-badge badge-free">Free</span>
-      <span class="tool-row-arrow">→</span>
-    </a>
-    <a href="/viral-generator" class="tool-row">
-      <div class="tool-row-left">
-        <span class="tool-row-icon">🎬</span>
-        <div>
-          <div class="tool-row-name">Viral Prompt Generator</div>
-          <div class="tool-row-desc">6-format video prompt system for TikTok and Reels creators</div>
-        </div>
-      </div>
-      <span class="tool-row-badge badge-free">Free</span>
-      <span class="tool-row-arrow">→</span>
-    </a>
-    <a href="/forex-lab" class="tool-row">
-      <div class="tool-row-left">
-        <span class="tool-row-icon">📈</span>
-        <div>
-          <div class="tool-row-name">Forex Strategy Lab</div>
-          <div class="tool-row-desc">Regression channel calculators and risk management tools for traders</div>
-        </div>
-      </div>
-      <span class="tool-row-badge badge-free">Free</span>
-      <span class="tool-row-arrow">→</span>
-    </a>
-    <a href="/math-tools" class="tool-row">
-      <div class="tool-row-left">
-        <span class="tool-row-icon">📐</span>
-        <div>
-          <div class="tool-row-name">Math Tools</div>
-          <div class="tool-row-desc">Interactive calculators for algebra, geometry, statistics and more</div>
-        </div>
-      </div>
-      <span class="tool-row-badge badge-free">Free</span>
-      <span class="tool-row-arrow">→</span>
-    </a>
-    <a href="https://selar.com/7o17517y15" target="_blank" class="tool-row">
-      <div class="tool-row-left">
-        <span class="tool-row-icon">📦</span>
-        <div>
-          <div class="tool-row-name">TikTok Creator Prompt Pack</div>
-          <div class="tool-row-desc">20 production-ready AI prompts for content creators — hooks, scripts, captions and more</div>
-        </div>
-      </div>
-      <span class="tool-row-badge badge-paid">₦7,500</span>
-      <span class="tool-row-arrow">→</span>
-    </a>
-    <a href="/article-formatter" class="tool-row">
-      <div class="tool-row-left">
-        <span class="tool-row-icon">📝</span>
-        <div>
-          <div class="tool-row-name">Article Formatter</div>
-          <div class="tool-row-desc">Format and export SEO-ready blog articles as HTML files — ready to upload to any site</div>
-        </div>
-      </div>
-      <span class="tool-row-badge badge-free">Free</span>
-      <span class="tool-row-arrow">→</span>
-    </a>
-  </div>
-</div>
+  <p><strong>Information collected automatically:</strong></p>
+  <ul>
+    <li>Basic usage data such as which pages you visit and how long you stay (via Google Analytics, if enabled)</li>
+    <li>Your browser type and general location (country/region level only — we never track your exact location)</li>
+    <li>Referral source — how you found our website</li>
+  </ul>
 
-<!-- CTA -->
-<div class="cta-section reveal">
-  <div class="cta-card">
-    <div>
-      <h2>Ready to get your edge?</h2>
-      <p>Start with any free tool — no account, no sign-up, no waiting. Your first prompt is one click away.</p>
-    </div>
-    <div class="cta-actions">
-      <a href="/prompt-generator" class="btn-primary">
-        Try Prompt Generator
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-      <a href="/#tools" class="btn-secondary">See All Tools</a>
-    </div>
-  </div>
+  <p><strong>Information we do NOT collect:</strong></p>
+  <ul>
+    <li>We do not collect payment information — all purchases are handled by Selar, which has its own privacy policy</li>
+    <li>We do not collect any data from our free tools — prompts you generate are not stored on our servers</li>
+    <li>We do not use tracking cookies for advertising purposes</li>
+  </ul>
+
+  <h2>How We Use Your Information</h2>
+  <ul>
+    <li>To send you the email content you signed up for — weekly prompt drops, AI tutorials, and tool updates</li>
+    <li>To fulfil digital product orders placed through our Selar store</li>
+    <li>To understand how visitors use our site so we can improve it</li>
+    <li>To respond to your messages and support requests</li>
+    <li>To send important updates about our products and services</li>
+  </ul>
+
+  <h2>Email Communications</h2>
+  <p>When you subscribe to our email list, you consent to receive our newsletter and product updates. Every email we send includes an unsubscribe link. You can opt out at any time with one click — no questions asked.</p>
+  <p>We use Google Sheets to store subscriber information. We do not use third-party email marketing platforms that sell or share your data.</p>
+
+  <h2>Cookies</h2>
+  <p>Our website uses minimal cookies. Specifically:</p>
+  <ul>
+    <li>Google Analytics cookies to understand site traffic (you can opt out via your browser settings)</li>
+    <li>Session cookies that help the site function correctly — these expire when you close your browser</li>
+    <li>Local storage on your device to remember your prompt history within a session — this stays on your device only</li>
+  </ul>
+  <p>We do not use advertising cookies or tracking pixels from social media platforms.</p>
+
+  <h2>Third-Party Services</h2>
+  <p>We use the following third-party services which have their own privacy policies:</p>
+  <ul>
+    <li><strong>Selar</strong> — processes payments for our digital products. See <a href="https://selar.co/privacy" target="_blank">Selar's Privacy Policy</a></li>
+    <li><strong>Google Analytics</strong> — anonymous site analytics. See <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a></li>
+    <li><strong>GitHub Pages</strong> — hosts this website. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank">GitHub's Privacy Policy</a></li>
+    <li><strong>Anthropic Claude API</strong> — powers our AI prompt generation tools. Prompts are processed but not stored by us. See <a href="https://www.anthropic.com/privacy" target="_blank">Anthropic's Privacy Policy</a></li>
+  </ul>
+
+  <h2>Data Storage and Security</h2>
+  <p>Your email address and name (when provided) are stored in a private Google Sheet accessible only to us. We take reasonable steps to protect this information including restricted access controls.</p>
+  <p>We retain your email data for as long as you remain subscribed. When you unsubscribe, your data is deleted from our list within 30 days.</p>
+
+  <h2>Your Rights</h2>
+  <p>You have the right to:</p>
+  <ul>
+    <li>Access the personal information we hold about you</li>
+    <li>Request correction of inaccurate information</li>
+    <li>Request deletion of your data at any time</li>
+    <li>Withdraw consent for email communications at any time via the unsubscribe link</li>
+    <li>Lodge a complaint with your local data protection authority</li>
+  </ul>
+  <p>To exercise any of these rights, email us at <strong>ultimateedge.info@gmail.com</strong> and we will respond within 7 days.</p>
+
+  <h2>Children's Privacy</h2>
+  <p>Our services are not directed at children under the age of 13. We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, please contact us immediately.</p>
+
+  <h2>Changes to This Policy</h2>
+  <p>We may update this privacy policy from time to time. We will notify subscribers of significant changes via email. The date at the top of this page always reflects the most recent update.</p>
+
+  <h2>Contact Us</h2>
+  <p>If you have any questions about this privacy policy or how we handle your data:</p>
+  <ul>
+    <li>Email: <strong>ultimateedge.info@gmail.com</strong></li>
+    <li>Website: <a href="https://ultimateedge.info">ultimateedge.info</a></li>
+  </ul>
 </div>
 
 <footer>
   <a href="/" class="footer-logo">Ultimate<span>Edge</span></a>
-  <ul class="footer-links">
-    <li><a href="/#tools">Tools</a></li>
-    <li><a href="/articles">Articles</a></li>
-    <li><a href="/privacy-policy">Privacy</a></li>
-    <li><a href="mailto:ultimateedge.info@gmail.com">Contact</a></li>
-  </ul>
   <div class="footer-copy">© 2026 UltimateEdge.info · Built by Solomon</div>
 </footer>
-
-<script>
-const reveals = document.querySelectorAll('.reveal');
-const obs = new IntersectionObserver(entries => {
-  entries.forEach((e,i) => {
-    if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('visible'), i * 100);
-      obs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.08 });
-reveals.forEach(el => obs.observe(el));
-</script>
 </body>
 </html>
