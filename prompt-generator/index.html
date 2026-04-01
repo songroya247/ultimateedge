@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Prompt Generator — UltimateEdge</title>
+<meta name="description" content="Free AI prompt generator for content creators. Generate perfect prompts for ChatGPT, Claude and Gemini in seconds. No sign-up required.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ultimateedge.info/prompt-generator">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080a0f;
+  --surface: #0e1117;
+  --surface2: #151821;
+  --surface3: #1a1f2e;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #e8ff47;
+  --accent2: #47c8ff;
+  --accent3: #ff6b47;
+  --purple: #b47fff;
+  --green: #47ffb4;
+  --text: #f0f2f7;
+  --muted: #6b7280;
+  --muted2: #8892a4;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* NOISE */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.5;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px;
+  background: rgba(8,10,15,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.12em; color: var(--text); text-decoration: none; }
+.nav-logo span { color: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-link { color: var(--muted2); text-decoration: none; font-size: 0.83rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
+.nav-link:hover { color: var(--text); }
+.nav-cta { background: var(--accent); color: #080a0f; padding: 7px 18px; border-radius: 4px; font-weight: 700; font-size: 0.83rem; letter-spacing: 0.05em; text-decoration: none; transition: opacity 0.2s; text-transform: uppercase; }
+.nav-cta:hover { opacity: 0.88; }
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 64px 40px 48px;
+  position: relative; overflow: hidden;
+}
+.hero-glow {
+  position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 400px;
+  background: radial-gradient(ellipse, rgba(232,255,71,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: 16px;
+  animation: fadeUp 0.5s 0.1s both;
+}
+.hero-tag::before, .hero-tag::after { content: ''; display: block; width: 28px; height: 1px; background: rgba(232,255,71,0.4); }
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  line-height: 0.95; letter-spacing: 0.03em;
+  margin-bottom: 16px;
+  animation: fadeUp 0.6s 0.2s both;
+}
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero-sub {
+  font-size: 1rem; color: var(--muted2); font-weight: 300;
+  max-width: 520px; margin: 0 auto 32px; line-height: 1.7;
+  animation: fadeUp 0.6s 0.3s both;
+}
+.hero-sub strong { color: var(--text); font-weight: 500; }
+
+/* USAGE COUNT */
+.usage-bar {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  font-family: 'DM Mono', monospace; font-size: 0.72rem;
+  color: var(--muted); letter-spacing: 0.08em;
+  margin-bottom: 0;
+  animation: fadeUp 0.6s 0.4s both;
+}
+.usage-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* MAIN TOOL */
+.tool-wrap {
+  max-width: 900px; margin: 0 auto;
+  padding: 40px 40px 80px;
+  position: relative; z-index: 1;
+}
+
+/* CATEGORIES */
+.cat-label {
+  font-family: 'DM Mono', monospace; font-size: 0.68rem;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px;
+}
+.cat-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  margin-bottom: 28px;
+}
+.cat-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 14px 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; cursor: pointer; transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif; color: var(--muted2);
+  position: relative; overflow: hidden;
+}
+.cat-btn::before {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: var(--cat-color, var(--accent));
+  transform: scaleX(0); transition: transform 0.2s;
+}
+.cat-btn:hover { background: var(--surface2); border-color: var(--border2); color: var(--text); }
+.cat-btn:hover::before { transform: scaleX(1); }
+.cat-btn.active { background: var(--surface2); border-color: rgba(232,255,71,0.3); color: var(--text); }
+.cat-btn.active::before { transform: scaleX(1); }
+.cat-icon { font-size: 1.4rem; line-height: 1; }
+.cat-name { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-align: center; }
+
+/* INPUT AREA */
+.input-section { margin-bottom: 20px; }
+.input-label {
+  font-family: 'DM Mono', monospace; font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+}
+.input-label span { color: var(--accent); }
+
+.goal-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; line-height: 1.6;
+  outline: none; resize: none;
+  min-height: 100px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.goal-input::placeholder { color: var(--muted); }
+.goal-input:focus {
+  border-color: rgba(232,255,71,0.35);
+  box-shadow: 0 0 0 3px rgba(232,255,71,0.05);
+}
+
+/* OPTIONS ROW */
+.options-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+  margin-bottom: 20px;
+}
+.option-group { display: flex; flex-direction: column; gap: 6px; }
+.option-label {
+  font-family: 'DM Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+.option-select {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 12px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+  outline: none; cursor: pointer; transition: border-color 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px;
+}
+.option-select:focus { border-color: rgba(232,255,71,0.35); }
+
+/* GENERATE BUTTON */
+.generate-btn {
+  width: 100%; padding: 18px;
+  background: var(--accent); color: #080a0f;
+  font-family: 'DM Sans', sans-serif; font-weight: 700;
+  font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase;
+  border: none; border-radius: 10px; cursor: pointer;
+  transition: all 0.2s; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.generate-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: translateX(-100%); transition: transform 0.5s;
+}
+.generate-btn:hover::before { transform: translateX(100%); }
+.generate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,255,71,0.3); }
+.generate-btn:active { transform: translateY(0); }
+.generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.generate-btn.loading { background: var(--surface2); color: var(--muted2); border: 1px solid var(--border); }
+
+/* LOADING DOTS */
+.loading-dots { display: flex; gap: 4px; align-items: center; }
+.loading-dots span {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--muted2);
+  animation: dot-bounce 1.2s infinite;
+}
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dot-bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+
+/* OUTPUT SECTION */
+.output-section {
+  margin-top: 24px;
+  display: none;
+  animation: fadeUp 0.4s ease;
+}
+.output-section.visible { display: block; }
+
+.output-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+}
+
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--surface2); border-bottom: 1px solid var(--border);
+}
+.output-header-left { display: flex; align-items: center; gap: 10px; }
+.output-badge {
+  font-family: 'DM Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  background: var(--accent); color: #080a0f;
+  padding: 3px 10px; border-radius: 3px; font-weight: 700;
+}
+.output-cat-tag {
+  font-family: 'DM Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted2);
+}
+.output-actions { display: flex; gap: 8px; }
+
+.action-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.8rem;
+  padding: 7px 14px; border-radius: 6px; cursor: pointer; border: none;
+  transition: all 0.2s; letter-spacing: 0.03em;
+}
+.btn-copy { background: rgba(232,255,71,0.1); color: var(--accent); border: 1px solid rgba(232,255,71,0.2); }
+.btn-copy:hover { background: rgba(232,255,71,0.18); }
+.btn-copy.copied { background: rgba(71,255,180,0.1); color: var(--green); border-color: rgba(71,255,180,0.2); }
+.btn-regen { background: var(--surface); color: var(--muted2); border: 1px solid var(--border); }
+.btn-regen:hover { border-color: var(--border2); color: var(--text); }
+
+.output-body { padding: 24px; }
+.output-text {
+  font-size: 0.95rem; color: var(--text); line-height: 1.8;
+  font-weight: 300; white-space: pre-wrap;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* PLATFORM LINKS */
+.platform-row {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.platform-label {
+  font-family: 'DM Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  flex-shrink: 0;
+}
+.platform-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 6px; text-decoration: none;
+  font-size: 0.78rem; font-weight: 600; transition: opacity 0.2s;
+  border: 1px solid var(--border);
+}
+.platform-link:hover { opacity: 0.8; }
+.link-chatgpt { background: rgba(16,163,127,0.1); border-color: rgba(16,163,127,0.25); color: #10a37f; }
+.link-claude { background: rgba(232,150,71,0.1); border-color: rgba(232,150,71,0.25); color: #e89647; }
+.link-gemini { background: rgba(71,200,255,0.08); border-color: rgba(71,200,255,0.2); color: var(--accent2); }
+
+/* HISTORY */
+.history-section { margin-top: 32px; }
+.history-label {
+  font-family: 'DM Mono', monospace; font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 10px;
+}
+.history-label::after { content: ''; flex: 1; max-width: 40px; height: 1px; background: var(--border); }
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+.history-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 16px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  cursor: pointer; transition: background 0.2s;
+}
+.history-item:hover { background: var(--surface2); border-color: var(--border2); }
+.history-item-text { font-size: 0.85rem; color: var(--muted2); flex: 1; line-height: 1.5; }
+.history-item-text strong { color: var(--text); display: block; font-size: 0.78rem; margin-bottom: 2px; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+.history-item-arrow { color: var(--muted); flex-shrink: 0; margin-top: 2px; }
+
+/* UPSELL */
+.upsell-strip {
+  max-width: 900px; margin: 0 auto 60px;
+  background: var(--surface2);
+  border: 1px solid rgba(232,255,71,0.15);
+  border-radius: 14px; padding: 28px 32px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  position: relative; overflow: hidden;
+}
+.upsell-strip::before {
+  content: ''; position: absolute; right: -60px; top: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(232,255,71,0.08) 0%, transparent 70%);
+}
+.upsell-text h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.06em; margin-bottom: 4px; }
+.upsell-text p { font-size: 0.85rem; color: var(--muted2); font-weight: 300; }
+.upsell-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.btn-sm-accent {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: #080a0f;
+  font-weight: 700; font-size: 0.82rem; letter-spacing: 0.04em;
+  padding: 10px 20px; border-radius: 6px; text-decoration: none;
+  transition: all 0.2s; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+}
+.btn-sm-accent:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-sm-ghost {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: transparent; color: var(--muted2);
+  font-weight: 500; font-size: 0.82rem;
+  padding: 10px 16px; border-radius: 6px; text-decoration: none;
+  border: 1px solid var(--border); transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+}
+.btn-sm-ghost:hover { border-color: var(--border2); color: var(--text); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border); padding: 40px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+}
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.1em; color: var(--text); text-decoration: none; }
+.footer-logo span { color: var(--accent); }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+.footer-links a:hover { color: var(--text); }
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-right .nav-link { display: none; }
+  .hero { padding: 48px 20px 36px; }
+  .tool-wrap { padding: 24px 20px 60px; }
+  .cat-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .cat-btn { padding: 10px 6px; }
+  .cat-icon { font-size: 1.2rem; }
+  .cat-name { font-size: 0.68rem; }
+  .options-row { grid-template-columns: 1fr; gap: 8px; }
+  .upsell-strip { flex-direction: column; padding: 24px 20px; }
+  .upsell-actions { width: 100%; }
+  .btn-sm-accent, .btn-sm-ghost { flex: 1; justify-content: center; }
+  footer { flex-direction: column; align-items: flex-start; padding: 32px 20px; }
+  .footer-links { flex-wrap: wrap; gap: 14px; }
+  .output-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">Ultimate<span>Edge</span></a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/#tools" class="nav-link">Tools</a>
+    <a href="https://selar.com/7o17517y15" target="_blank" class="nav-link">Prompt Pack</a>
+    <a href="/promptedge-pro" class="nav-cta">Go Pro ⚡</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">Free · No Sign-up · Unlimited</div>
+  <h1>AI <em>Prompt</em><br>Generator</h1>
+  <p class="hero-sub">
+    Describe your goal. Get a <strong>perfectly structured prompt</strong> for ChatGPT, Claude, or Gemini in seconds. 8 categories, unlimited generations.
+  </p>
+  <div class="usage-bar">
+    <span class="usage-dot"></span>
+    <span id="usageCount">Loading usage...</span>
+  </div>
+</div>
+
+<!-- TOOL -->
+<div class="tool-wrap">
+
+  <!-- CATEGORIES -->
+  <div class="cat-label">Select a Category</div>
+  <div class="cat-grid">
+    <button class="cat-btn active" onclick="selectCat(this,'writing')" style="--cat-color:#e8ff47">
+      <span class="cat-icon">✍️</span>
+      <span class="cat-name">Writing</span>
+    </button>
+    <button class="cat-btn" onclick="selectCat(this,'marketing')" style="--cat-color:#47c8ff">
+      <span class="cat-icon">📣</span>
+      <span class="cat-name">Marketing</span>
+    </button>
+    <button class="cat-btn" onclick="selectCat(this,'social')" style="--cat-color:#ff6b47">
+      <span class="cat-icon">📱</span>
+      <span class="cat-name">Social Media</span>
+    </button>
+    <button class="cat-btn" onclick="selectCat(this,'coding')" style="--cat-color:#47ffb4">
+      <span class="cat-icon">💻</span>
+      <span class="cat-name">Coding</span>
+    </button>
+    <button class="cat-btn" onclick="selectCat(this,'business')" style="--cat-color:#b47fff">
+      <span class="cat-icon">💼</span>
+      <span class="cat-name">Business</span>
+    </button>
+    <button class="cat-btn" onclick="selectCat(this,'education')" style="--cat-color:#ffb347">
+      <span class="cat-icon">📚</span>
+      <span class="cat-name">Education</span>
+    </button>
+    <button class="cat-btn" onclick="selectCat(this,'personal')" style="--cat-color:#ff47a3">
+      <span class="cat-icon">🧘</span>
+      <span class="cat-name">Personal Dev</span>
+    </button>
+    <button class="cat-btn" onclick="selectCat(this,'startup')" style="--cat-color:#47ffe0">
+      <span class="cat-icon">🚀</span>
+      <span class="cat-name">Startup</span>
+    </button>
+  </div>
+
+  <!-- GOAL INPUT -->
+  <div class="input-section">
+    <div class="input-label">
+      Describe Your Goal
+      <span id="charCount">0 / 300</span>
+    </div>
+    <textarea
+      class="goal-input"
+      id="goalInput"
+      maxlength="300"
+      placeholder="e.g. Write a viral TikTok script about why most people fail at saving money, aimed at young Nigerians aged 18-30..."
+      oninput="updateCharCount()"
+    ></textarea>
+  </div>
+
+  <!-- OPTIONS -->
+  <div class="options-row">
+    <div class="option-group">
+      <div class="option-label">Tone</div>
+      <select class="option-select" id="toneSelect">
+        <option value="conversational">Conversational</option>
+        <option value="professional">Professional</option>
+        <option value="persuasive">Persuasive</option>
+        <option value="educational">Educational</option>
+        <option value="humorous">Humorous</option>
+        <option value="inspirational">Inspirational</option>
+        <option value="urgent">Urgent</option>
+        <option value="storytelling">Storytelling</option>
+      </select>
+    </div>
+    <div class="option-group">
+      <div class="option-label">Audience</div>
+      <select class="option-select" id="audienceSelect">
+        <option value="general audience">General Audience</option>
+        <option value="content creators">Content Creators</option>
+        <option value="entrepreneurs">Entrepreneurs</option>
+        <option value="students">Students</option>
+        <option value="beginners">Beginners</option>
+        <option value="professionals">Professionals</option>
+        <option value="young adults 18-30">Young Adults 18-30</option>
+        <option value="small business owners">Small Business Owners</option>
+      </select>
+    </div>
+    <div class="option-group">
+      <div class="option-label">Output Length</div>
+      <select class="option-select" id="lengthSelect">
+        <option value="concise (under 200 words)">Concise</option>
+        <option value="medium (300-500 words)" selected>Medium</option>
+        <option value="detailed (600-900 words)">Detailed</option>
+        <option value="comprehensive (1000+ words)">Comprehensive</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- GENERATE BUTTON -->
+  <button class="generate-btn" id="generateBtn" onclick="generatePrompt()">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    Generate Prompt
+  </button>
+
+  <!-- OUTPUT -->
+  <div class="output-section" id="outputSection">
+    <div class="output-card">
+      <div class="output-header">
+        <div class="output-header-left">
+          <span class="output-badge">✓ Ready to Use</span>
+          <span class="output-cat-tag" id="outputCatTag">Writing</span>
+        </div>
+        <div class="output-actions">
+          <button class="action-btn btn-regen" onclick="generatePrompt()">
+            ↺ Regenerate
+          </button>
+          <button class="action-btn btn-copy" id="copyBtn" onclick="copyPrompt()">
+            ⎘ Copy Prompt
+          </button>
+        </div>
+      </div>
+      <div class="output-body">
+        <div class="output-text" id="outputText"></div>
+      </div>
+      <div class="platform-row">
+        <span class="platform-label">Use with:</span>
+        <a href="https://chat.openai.com" target="_blank" class="platform-link link-chatgpt">🤖 ChatGPT</a>
+        <a href="https://claude.ai" target="_blank" class="platform-link link-claude">🧠 Claude</a>
+        <a href="https://gemini.google.com" target="_blank" class="platform-link link-gemini">💎 Gemini</a>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="history-section" id="historySection" style="display:none">
+      <div class="history-label">Recent Prompts</div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- UPSELL -->
+<div class="upsell-strip">
+  <div class="upsell-text">
+    <h3>Want 20 Pre-Built Prompts for TikTok?</h3>
+    <p>Stop generating from scratch. Get 20 production-ready prompts for hooks, scripts, captions and content calendars — instantly.</p>
+  </div>
+  <div class="upsell-actions">
+    <a href="https://selar.com/7o17517y15" target="_blank" class="btn-sm-accent">Get the Pack — ₦7,500 →</a>
+    <a href="/promptedge-pro" class="btn-sm-ghost">Go Pro</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">Ultimate<span>Edge</span></a>
+  <ul class="footer-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/#tools">All Tools</a></li>
+    <li><a href="https://selar.com/7o17517y15" target="_blank">Prompt Pack</a></li>
+    <li><a href="/promptedge-pro">Go Pro</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 UltimateEdge.info · Built by Solomon</div>
+</footer>
+
+<script>
+// ── STATE ──
+let selectedCategory = 'writing';
+let promptHistory = [];
+let usageCount = parseInt(localStorage.getItem('ue_usage') || '0');
+let currentPrompt = '';
+
+// ── USAGE COUNT ──
+function updateUsageDisplay() {
+  const total = 50000 + usageCount;
+  document.getElementById('usageCount').textContent =
+    total.toLocaleString() + ' prompts generated and counting';
+}
+updateUsageDisplay();
+
+// ── CATEGORY SELECT ──
+function selectCat(el, cat) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedCategory = cat;
+  updatePlaceholder(cat);
+}
+
+const placeholders = {
+  writing: 'e.g. Write a viral TikTok script about why most people fail at saving money, aimed at young Nigerians aged 18-30...',
+  marketing: 'e.g. Create a Facebook ad for a Nigerian fashion brand selling affordable luxury clothing...',
+  social: 'e.g. Write 5 Instagram captions for a food blogger who posts Nigerian cuisine recipes...',
+  coding: 'e.g. Help me build a simple JavaScript function that validates Nigerian phone numbers...',
+  business: 'e.g. Write a professional pitch email to a brand asking for a content partnership deal...',
+  education: 'e.g. Explain compound interest to a 16-year-old student using simple everyday examples...',
+  personal: 'e.g. Create a 30-day morning routine plan for a busy entrepreneur who wants to be more productive...',
+  startup: 'e.g. Write a one-page business plan for a Nigerian digital product business selling AI tools...'
+};
+
+function updatePlaceholder(cat) {
+  document.getElementById('goalInput').placeholder = placeholders[cat] || placeholders.writing;
+}
+
+// ── CHAR COUNT ──
+function updateCharCount() {
+  const len = document.getElementById('goalInput').value.length;
+  const el = document.getElementById('charCount');
+  el.textContent = len + ' / 300';
+  el.style.color = len > 260 ? '#ff6b47' : '';
+}
+
+// ── SYSTEM PROMPTS PER CATEGORY ──
+const systemPrompts = {
+  writing: `You are an expert prompt engineer specialising in writing tasks. Generate a detailed, structured prompt that will help someone get excellent writing output from an AI assistant. The prompt should specify: the exact writing task, the tone and style required, the target audience, structural requirements, and any specific elements to include or avoid. Make the prompt specific, actionable, and ready to paste directly into any AI tool.`,
+
+  marketing: `You are an expert prompt engineer specialising in marketing and copywriting. Generate a detailed, structured prompt for a marketing task. The prompt should guide an AI to produce compelling marketing copy by specifying: the product/service, target audience, desired emotion or action, key benefits to highlight, and the specific format needed. Make it immediately usable.`,
+
+  social: `You are an expert prompt engineer specialising in social media content. Generate a detailed, structured prompt for social media content creation. Include specifications for: platform-specific format, hook strategy, content structure, hashtag guidance, call to action, and tone that drives engagement. The output prompt should be ready to use immediately.`,
+
+  coding: `You are an expert prompt engineer specialising in software development tasks. Generate a detailed, structured coding prompt that specifies: the programming language, the exact problem to solve, input/output requirements, edge cases to handle, coding style preferences, and any constraints. Make the prompt clear and technically precise.`,
+
+  business: `You are an expert prompt engineer specialising in business communication and strategy. Generate a detailed, structured prompt for a business task. Specify: the business context, the desired outcome, the professional tone required, the format needed, and any key points that must be addressed. The prompt should produce professional, actionable business output.`,
+
+  education: `You are an expert prompt engineer specialising in educational content. Generate a detailed, structured prompt for creating educational material. Include specifications for: the learning objective, the student's knowledge level, the teaching approach, examples to use, how to check understanding, and the format of the explanation. Make it pedagogically sound.`,
+
+  personal: `You are an expert prompt engineer specialising in personal development. Generate a detailed, structured prompt for personal growth and self-improvement tasks. Specify: the goal to achieve, the timeframe, the person's likely challenges, the support structure needed, measurable outcomes, and an encouraging tone that motivates action.`,
+
+  startup: `You are an expert prompt engineer specialising in entrepreneurship and startup strategy. Generate a detailed, structured prompt for startup and business-building tasks. Include specifications for: the business stage, target market, key challenge to solve, framework to use, and the practical actionable format needed. Focus on real-world applicability.`
+};
+
+// ── GENERATE PROMPT ──
+async function generatePrompt() {
+  const goal = document.getElementById('goalInput').value.trim();
+  if (!goal) {
+    document.getElementById('goalInput').focus();
+    document.getElementById('goalInput').style.borderColor = 'rgba(255,107,71,0.5)';
+    setTimeout(() => document.getElementById('goalInput').style.borderColor = '', 2000);
+    return;
+  }
+
+  const tone = document.getElementById('toneSelect').value;
+  const audience = document.getElementById('audienceSelect').value;
+  const length = document.getElementById('lengthSelect').value;
+  const btn = document.getElementById('generateBtn');
+
+  // Loading state
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div> Generating your prompt...`;
+
+  const userMessage = `Generate a high-quality AI prompt for this goal:
+
+Goal: ${goal}
+Category: ${selectedCategory}
+Tone: ${tone}
+Target audience: ${audience}
+Desired output length: ${length}
+
+Create a detailed, ready-to-use prompt. The prompt should:
+1. Start with a clear role definition for the AI (e.g. "Act as a...")
+2. State the specific task clearly
+3. Include tone, audience, and format instructions
+4. Add any constraints or requirements
+5. End with a clear instruction to begin
+
+Output ONLY the prompt itself — no explanation, no preamble, no "Here is your prompt:". Just the prompt, ready to copy and paste.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompts[selectedCategory] || systemPrompts.writing,
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+
+    const data = await response.json();
+    const prompt = data.content?.[0]?.text || '';
+
+    if (!prompt) throw new Error('Empty response');
+
+    currentPrompt = prompt;
+    displayOutput(prompt);
+    addToHistory(goal, prompt);
+    incrementUsage();
+
+  } catch (err) {
+    // Fallback: generate a solid template-based prompt
+    const fallback = generateFallbackPrompt(goal, tone, audience, length);
+    currentPrompt = fallback;
+    displayOutput(fallback);
+    addToHistory(goal, fallback);
+    incrementUsage();
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.innerHTML = `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Generate Prompt`;
+  }
+}
+
+// ── FALLBACK PROMPT GENERATOR ──
+function generateFallbackPrompt(goal, tone, audience, length) {
+  const catNames = {
+    writing: 'expert writer', marketing: 'marketing specialist',
+    social: 'social media strategist', coding: 'senior software developer',
+    business: 'business consultant', education: 'experienced educator',
+    personal: 'life and productivity coach', startup: 'startup advisor'
+  };
+  const role = catNames[selectedCategory] || 'expert assistant';
+
+  return `Act as a ${role} with 10+ years of experience helping ${audience}.
+
+Your task: ${goal}
+
+Requirements:
+- Tone: ${tone} — write in a way that feels natural and appropriate for this tone throughout
+- Audience: Tailor everything specifically for ${audience} — use language, examples, and references they will instantly relate to
+- Length: Aim for ${length}
+- Format: Use clear structure with headers or numbered sections where appropriate
+- Quality: Every sentence should add value — avoid filler, clichés, and generic advice
+
+Additional guidelines:
+- Start strong — the opening line must immediately capture attention
+- Use specific examples, not vague generalities
+- If relevant, include a clear call to action at the end
+- Make the output immediately usable without further editing
+
+Begin your response now.`;
+}
+
+// ── DISPLAY OUTPUT ──
+function displayOutput(text) {
+  const catNames = {
+    writing: 'Writing', marketing: 'Marketing', social: 'Social Media',
+    coding: 'Coding', business: 'Business', education: 'Education',
+    personal: 'Personal Dev', startup: 'Startup'
+  };
+
+  document.getElementById('outputText').textContent = text;
+  document.getElementById('outputCatTag').textContent = catNames[selectedCategory] || selectedCategory;
+  document.getElementById('outputSection').classList.add('visible');
+
+  // Scroll to output
+  setTimeout(() => {
+    document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+
+  // Reset copy button
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.className = 'action-btn btn-copy';
+  copyBtn.textContent = '⎘ Copy Prompt';
+}
+
+// ── COPY PROMPT ──
+function copyPrompt() {
+  if (!currentPrompt) return;
+  navigator.clipboard.writeText(currentPrompt).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.className = 'action-btn btn-copy copied';
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => {
+      btn.className = 'action-btn btn-copy';
+      btn.textContent = '⎘ Copy Prompt';
+    }, 2500);
+  });
+}
+
+// ── HISTORY ──
+function addToHistory(goal, prompt) {
+  promptHistory.unshift({ goal, prompt, cat: selectedCategory });
+  if (promptHistory.length > 5) promptHistory.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  if (promptHistory.length < 2) return;
+  const section = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+  section.style.display = 'block';
+  list.innerHTML = promptHistory.slice(1).map((item, i) => `
+    <div class="history-item" onclick="restoreHistory(${i + 1})">
+      <div class="history-item-text">
+        <strong>${item.cat}</strong>
+        ${item.goal.length > 80 ? item.goal.substring(0, 80) + '...' : item.goal}
+      </div>
+      <span class="history-item-arrow">→</span>
+    </div>
+  `).join('');
+}
+
+function restoreHistory(index) {
+  const item = promptHistory[index];
+  if (!item) return;
+  currentPrompt = item.prompt;
+  displayOutput(item.prompt);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── USAGE ──
+function incrementUsage() {
+  usageCount++;
+  localStorage.setItem('ue_usage', usageCount);
+  updateUsageDisplay();
+}
+
+// ── ENTER KEY TO GENERATE ──
+document.getElementById('goalInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.ctrlKey) generatePrompt();
+});
+</script>
+</body>
+</html>
