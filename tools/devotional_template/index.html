@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ManimForge — Slide Prompt Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0b0c10;
+  --surface:  #13151c;
+  --panel:    #1a1d28;
+  --border:   rgba(255,255,255,0.07);
+  --accent:   #00e5ff;
+  --accent2:  #a78bfa;
+  --accent3:  #34d399;
+  --gold:     #fbbf24;
+  --red:      #f87171;
+  --white:    #f1f5f9;
+  --soft:     #94a3b8;
+  --muted:    #475569;
+  --glow:     rgba(0,229,255,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100vh; background: var(--bg); color: var(--white); font-family: 'Syne', sans-serif; }
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; opacity: 0.4;
+}
+
+.app {
+  position: relative; z-index: 1;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+}
+
+/* ── HEADER ── */
+.header { text-align: center; margin-bottom: 3rem; }
+.logo-row { display: flex; align-items: center; justify-content: center; gap: 0.7rem; margin-bottom: 1rem; }
+.logo-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 0 20px rgba(0,229,255,0.3);
+}
+.logo-text { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.logo-text span { color: var(--accent); }
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 300; font-style: italic; line-height: 1.2;
+  margin-bottom: 0.7rem;
+}
+h1 em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.subtitle {
+  font-size: 0.9rem; color: var(--soft); max-width: 520px; margin: 0 auto;
+  line-height: 1.6; font-family: 'DM Mono', monospace;
+}
+
+/* ── STEP LABELS ── */
+.step-label { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; }
+.step-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 800; color: var(--bg); flex-shrink: 0;
+}
+.step-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem; transition: border-color 0.3s;
+}
+.card:focus-within { border-color: rgba(0,229,255,0.3); box-shadow: 0 0 0 1px rgba(0,229,255,0.1); }
+
+/* ── TEXTAREA ── */
+textarea {
+  width: 100%; min-height: 200px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--white); font-family: 'DM Mono', monospace;
+  font-size: 0.85rem; line-height: 1.7; padding: 1rem 1.1rem;
+  resize: vertical; outline: none; transition: border-color 0.2s;
+}
+textarea:focus { border-color: rgba(0,229,255,0.4); }
+textarea::placeholder { color: var(--muted); font-style: italic; }
+
+/* ── OPTIONS ── */
+.options-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem; margin-bottom: 1.2rem;
+}
+.opt-group label {
+  display: block; font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); margin-bottom: 0.4rem;
+}
+select, input[type="number"] {
+  width: 100%; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--white); font-family: 'DM Mono', monospace;
+  font-size: 0.82rem; padding: 0.5em 0.8em; outline: none;
+  transition: border-color 0.2s; appearance: none; -webkit-appearance: none; cursor: pointer;
+}
+select:focus, input:focus { border-color: rgba(0,229,255,0.4); }
+
+/* ── CHIP TOGGLES ── */
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip {
+  padding: 0.3em 0.9em; border-radius: 20px; border: 1px solid var(--border);
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+  cursor: pointer; transition: all 0.2s; color: var(--soft); background: var(--panel); user-select: none;
+}
+.chip.on { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.08); box-shadow: 0 0 8px rgba(0,229,255,0.15); }
+.chip.on.purple { border-color: var(--accent2); color: var(--accent2); background: rgba(167,139,250,0.08); }
+.chip.on.green  { border-color: var(--accent3); color: var(--accent3); background: rgba(52,211,153,0.08); }
+.chip.on.gold   { border-color: var(--gold);   color: var(--gold);   background: rgba(251,191,36,0.08); }
+
+/* ══════════════════════════════════════════
+   TEMPLATE GALLERY
+══════════════════════════════════════════ */
+.template-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.tpl-card {
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+  position: relative;
+  background: var(--panel);
+}
+
+.tpl-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+.tpl-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 12px 40px rgba(0,229,255,0.2);
+}
+.tpl-card.selected::after {
+  content: '✓ Selected';
+  position: absolute; top: 8px; right: 8px;
+  background: var(--accent); color: var(--bg);
+  font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em;
+  padding: 3px 8px; border-radius: 20px; text-transform: uppercase;
+}
+
+.tpl-preview {
+  width: 100%; height: 140px;
+  display: block; overflow: hidden;
+}
+
+.tpl-preview svg { width: 100%; height: 100%; display: block; }
+
+.tpl-info {
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+}
+
+.tpl-name {
+  font-size: 0.8rem; font-weight: 700; color: var(--white);
+  margin-bottom: 0.2rem;
+}
+
+.tpl-desc {
+  font-size: 0.65rem; font-family: 'DM Mono', monospace;
+  color: var(--soft); line-height: 1.5;
+}
+
+/* ── TEMPLATE CATEGORY TABS ── */
+.tpl-tabs {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.tpl-tab {
+  padding: 0.3em 0.85em;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+  color: var(--soft); background: var(--panel);
+}
+
+.tpl-tab.active {
+  background: var(--accent); color: var(--bg);
+  border-color: var(--accent);
+}
+
+/* ── GENERATE BUTTON ── */
+.btn-generate {
+  width: 100%; padding: 1rem; border: none; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: var(--bg); font-family: 'Syne', sans-serif;
+  font-size: 0.95rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0,229,255,0.25);
+  margin-bottom: 2.5rem;
+}
+.btn-generate:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(0,229,255,0.35); }
+.btn-generate:active { transform: translateY(0); }
+.btn-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(0,0,0,0.3); border-top-color: var(--bg);
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── OUTPUT ── */
+#output-section { display: none; }
+#output-section.visible { display: block; }
+
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1rem;
+}
+.output-title {
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--accent3);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.output-title::before {
+  content: ''; display: block; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--accent3);
+  box-shadow: 0 0 8px var(--accent3); animation: blink 1.5s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.btn-copy {
+  padding: 0.35em 1em; border-radius: 6px;
+  border: 1px solid rgba(52,211,153,0.4); background: rgba(52,211,153,0.08);
+  color: var(--accent3); font-family: 'DM Mono', monospace;
+  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-copy:hover { background: rgba(52,211,153,0.18); }
+.btn-copy.copied { border-color: var(--gold); color: var(--gold); background: rgba(251,191,36,0.08); }
+
+.output-box {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.3rem;
+  font-family: 'DM Mono', monospace; font-size: 0.8rem; line-height: 1.8;
+  color: #c8d8e8; white-space: pre-wrap; word-break: break-word;
+  max-height: 520px; overflow-y: auto; scrollbar-width: thin;
+  scrollbar-color: var(--muted) transparent; margin-bottom: 1.2rem;
+}
+.output-box::-webkit-scrollbar { width: 5px; }
+.output-box::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 3px; }
+
+.csv-box {
+  background: var(--panel); border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 10px; padding: 1.3rem;
+  font-family: 'DM Mono', monospace; font-size: 0.78rem; line-height: 1.8;
+  color: #c8d8e8; white-space: pre-wrap; word-break: break-word;
+  max-height: 320px; overflow-y: auto; scrollbar-width: thin;
+  scrollbar-color: var(--muted) transparent;
+}
+.csv-box::-webkit-scrollbar { width: 5px; }
+.csv-box::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 3px; }
+
+.csv-dl-row { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; margin-top: 0.8rem; }
+
+.btn-dl {
+  padding: 0.38em 1.1em; border-radius: 6px;
+  border: 1px solid rgba(167,139,250,0.4); background: rgba(167,139,250,0.08);
+  color: var(--accent2); font-family: 'DM Mono', monospace;
+  font-size: 0.7rem; cursor: pointer; letter-spacing: 0.08em; transition: all 0.2s;
+}
+.btn-dl:hover { background: rgba(167,139,250,0.18); }
+
+.stats-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.5rem; }
+.stat-chip {
+  padding: 0.28em 0.9em; border-radius: 20px;
+  font-family: 'DM Mono', monospace; font-size: 0.68rem;
+  border: 1px solid var(--border); color: var(--soft);
+}
+.stat-chip span { color: var(--accent); font-weight: 600; }
+
+.divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 2rem 0; }
+
+/* HOW IT WORKS */
+.how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.how-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+.how-icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
+.how-card h4 { font-size: 0.82rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+.how-card p  { font-size: 0.75rem; color: var(--soft); line-height: 1.6; font-family: 'DM Mono', monospace; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 3px; }
+
+/* Template selection badge indicator */
+.selected-template-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.3em 0.9em; border-radius: 20px;
+  background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.3);
+  font-size: 0.72rem; font-family: 'DM Mono', monospace;
+  color: var(--accent); margin-left: auto;
+}
+
+/* Template section header row */
+.tpl-header-row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.7rem;
+  margin-bottom: 0.9rem;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">Manim<span>Forge</span></div>
+    </div>
+    <h1>Turn any text into a<br><em>cinematic slide prompt</em></h1>
+    <p class="subtitle">Paste your content → pick a design template → get a ready-to-use AI prompt that builds a full animated HTML slide deck with TTS narrations + downloadable CSV.</p>
+  </div>
+
+  <!-- STEP 1: PASTE TEXT -->
+  <div class="card">
+    <div class="step-label">
+      <div class="step-num">1</div>
+      <div class="step-title">Paste Your Source Text</div>
+    </div>
+    <textarea id="source-text" placeholder="Paste any content here — a devotional, article, lesson, speech, sermon, research notes, scripture passage…
+
+Example:
+THE PEACE OF GOD
+Text: John 14:26-31
+Key Verse: 'Peace I leave with you, my peace I give unto you…'
+
+Christ said to His disciples, 'my peace I give unto you'..."></textarea>
+  </div>
+
+  <!-- STEP 2: DESIGN TEMPLATE -->
+  <div class="card">
+    <div class="tpl-header-row">
+      <div class="step-label" style="margin-bottom:0">
+        <div class="step-num">2</div>
+        <div class="step-title">Choose a Design Template</div>
+      </div>
+      <span class="selected-template-badge" id="selected-badge">✦ Dark Gold Cinematic</span>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="tpl-tabs" id="tpl-tabs">
+      <div class="tpl-tab active" data-cat="all">All Templates</div>
+      <div class="tpl-tab" data-cat="dark">Dark Themes</div>
+      <div class="tpl-tab" data-cat="light">Light Themes</div>
+      <div class="tpl-tab" data-cat="faith">Faith & Devotional</div>
+      <div class="tpl-tab" data-cat="modern">Modern & Tech</div>
+      <div class="tpl-tab" data-cat="nature">Nature & Organic</div>
+    </div>
+
+    <!-- Template Gallery -->
+    <div class="template-gallery" id="template-gallery">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- STEP 3: OPTIONS -->
+  <div class="card">
+    <div class="step-label">
+      <div class="step-num">3</div>
+      <div class="step-title">Customise the Output</div>
+    </div>
+
+    <div class="options-grid">
+      <div class="opt-group">
+        <label>Number of Slides</label>
+        <select id="opt-slides">
+          <option value="auto">Auto-detect (3–9)</option>
+          <option value="3">3 slides</option>
+          <option value="5">5 slides</option>
+          <option value="7" selected>7 slides</option>
+          <option value="9">9 slides</option>
+        </select>
+      </div>
+      <div class="opt-group">
+        <label>Font Pairing</label>
+        <select id="opt-font">
+          <option value="template">Use Template Font (Recommended)</option>
+          <option value="cinzel-lora">Cinzel Decorative + Lora (Elegant)</option>
+          <option value="fraunces-dm">Fraunces + DM Mono (Literary)</option>
+          <option value="playfair-source">Playfair Display + Source Serif (Classic)</option>
+          <option value="syne-space">Syne + Space Mono (Modern)</option>
+          <option value="auto">Let AI decide</option>
+        </select>
+      </div>
+      <div class="opt-group">
+        <label>Narration Tone</label>
+        <select id="opt-tone">
+          <option value="devotional">Devotional / Sermon</option>
+          <option value="educational">Educational / Explainer</option>
+          <option value="corporate">Corporate / Professional</option>
+          <option value="storytelling">Storytelling / Narrative</option>
+          <option value="inspirational">Motivational / Inspirational</option>
+          <option value="casual">Casual / Conversational</option>
+        </select>
+      </div>
+      <div class="opt-group">
+        <label>TTS Speed</label>
+        <select id="opt-speed">
+          <option value="0.85">Slow &amp; Reflective (0.85)</option>
+          <option value="0.92" selected>Measured &amp; Warm (0.92)</option>
+          <option value="1.0">Natural Pace (1.0)</option>
+          <option value="1.1">Brisk &amp; Energetic (1.1)</option>
+        </select>
+      </div>
+      <div class="opt-group">
+        <label>Animation Style</label>
+        <select id="opt-anim">
+          <option value="template">Match Template Style</option>
+          <option value="manim">Manim-style (Geometric + Math)</option>
+          <option value="cinematic">Cinematic (Film + Motion)</option>
+          <option value="minimal">Minimal (Clean Fades)</option>
+          <option value="dramatic">Dramatic (Bold Reveals)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="step-label" style="margin-top:1rem">
+      <div class="step-num" style="background:var(--accent2)">+</div>
+      <div class="step-title" style="color:var(--accent2)">Visual Elements to Include</div>
+    </div>
+    <div class="chip-row" id="chips">
+      <div class="chip on" data-key="starfield">✦ Starfield BG</div>
+      <div class="chip on purple" data-key="progress">▬ Progress Bar</div>
+      <div class="chip on green" data-key="tts">🔊 Auto TTS</div>
+      <div class="chip on gold" data-key="ripple">◉ Tap Ripple</div>
+      <div class="chip on" data-key="diagrams">◈ Visual Diagrams</div>
+      <div class="chip on purple" data-key="particles">✧ Particles</div>
+      <div class="chip on green" data-key="countdown">⏱ Slide Timer</div>
+      <div class="chip on gold" data-key="csv">📄 CSV Narrations</div>
+      <div class="chip" data-key="keyboard">⌨ Keyboard Nav</div>
+      <div class="chip" data-key="loop">↺ Loop Slides</div>
+      <div class="chip" data-key="svgdeco">◆ SVG Decorations</div>
+      <div class="chip" data-key="glassmorphism">◫ Glassmorphism</div>
+    </div>
+  </div>
+
+  <!-- STEP 4: GENERATE -->
+  <button class="btn-generate" id="btn-gen" onclick="generatePrompt()">
+    ✦ Generate Prompt + CSV
+  </button>
+
+  <!-- OUTPUT -->
+  <div id="output-section">
+    <div class="stats-row" id="stats-row"></div>
+
+    <div class="output-header">
+      <div class="output-title">Generated AI Prompt</div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <button class="btn-copy" id="copy-prompt" onclick="copyPrompt()">Copy Prompt</button>
+        <button class="btn-copy" id="copy-prompt-sys" onclick="copyWithSystem()" style="border-color:rgba(251,191,36,0.4);color:var(--gold);background:rgba(251,191,36,0.06)" title="Prepends a system instruction telling AI to output raw HTML only">+ System Msg</button>
+      </div>
+    </div>
+    <div class="output-box" id="prompt-output"></div>
+
+    <div class="divider"></div>
+
+    <!-- AI OUTPUT CLEANER -->
+    <div class="card" style="border-color:rgba(248,113,113,0.25);background:rgba(248,113,113,0.04)">
+      <div class="step-label">
+        <div class="step-num" style="background:var(--red)">🧹</div>
+        <div class="step-title" style="color:var(--red)">AI Output Cleaner</div>
+      </div>
+      <p style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--soft);margin-bottom:0.8rem;line-height:1.6">
+        If the AI added preamble text or markdown fences before the HTML, paste the raw AI response here and click <strong style="color:var(--white)">Strip &amp; Fix</strong> — it will extract just the clean HTML starting from <code style="color:var(--accent)">&lt;!DOCTYPE html&gt;</code>.
+      </p>
+      <textarea id="cleaner-input" style="min-height:120px" placeholder="Paste AI response here (even if it starts with 'Here is your HTML...' or ```html)"></textarea>
+      <div style="display:flex;gap:0.6rem;margin-top:0.7rem;flex-wrap:wrap">
+        <button class="btn-dl" onclick="cleanAIOutput()" style="border-color:rgba(248,113,113,0.4);color:var(--red);background:rgba(248,113,113,0.08);font-size:0.78rem;padding:0.45em 1.2em">⚡ Strip &amp; Fix</button>
+        <button class="btn-copy" id="copy-cleaned" onclick="copyCleaned()" style="display:none">Copy Clean HTML</button>
+        <button class="btn-dl" id="dl-cleaned" onclick="downloadCleaned()" style="display:none">⬇ Save as .html</button>
+      </div>
+      <div id="cleaner-result" style="display:none;margin-top:0.8rem">
+        <div id="cleaner-status" style="font-family:'DM Mono',monospace;font-size:0.72rem;margin-bottom:0.5rem"></div>
+        <div class="output-box" id="cleaner-output" style="max-height:200px"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CSV -->
+    <div class="output-header">
+      <div class="output-title" style="color:var(--accent2)">Narration CSV Preview</div>
+      <button class="btn-copy" id="copy-csv" style="border-color:rgba(167,139,250,0.4);color:var(--accent2);background:rgba(167,139,250,0.08)" onclick="copyCSV()">Copy CSV</button>
+    </div>
+    <div class="csv-box" id="csv-output"></div>
+    <div class="csv-dl-row">
+      <button class="btn-dl" onclick="downloadCSV()">⬇ Download .csv</button>
+      <span style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--soft)">Open in Excel, Google Sheets, or Numbers</span>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="divider"></div>
+  <div class="step-label">
+    <div class="step-num" style="background:var(--muted)">?</div>
+    <div class="step-title" style="color:var(--soft)">How It Works</div>
+  </div>
+  <div class="how-grid">
+    <div class="how-card"><div class="how-icon">📋</div><h4>1. Paste Any Text</h4><p>Articles, sermons, lessons, research, scripts — anything goes.</p></div>
+    <div class="how-card"><div class="how-icon">🎨</div><h4>2. Pick a Template</h4><p>Choose from 12 visual design templates with unique SVG aesthetics, colors, and moods.</p></div>
+    <div class="how-card"><div class="how-icon">⚙️</div><h4>3. Set Your Options</h4><p>Choose fonts, tone, slide count, and which features to include.</p></div>
+    <div class="how-card"><div class="how-icon">✦</div><h4>4. Copy the Prompt</h4><p>Paste it into Claude, ChatGPT, or any AI assistant. It generates a full HTML slide deck.</p></div>
+    <div class="how-card"><div class="how-icon">📄</div><h4>5. Use the CSV</h4><p>The narration CSV is generated alongside. Each row = one slide script, ready to edit.</p></div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  TEMPLATE DEFINITIONS  (12 templates)
+// ══════════════════════════════════════════
+const TEMPLATES = [
+  {
+    id: 'dark-gold',
+    name: 'Dark Gold Cinematic',
+    cat: ['all','dark','faith'],
+    desc: 'Deep navy bg · Gold accents · Radial glows',
+    font: 'Cinzel Decorative + Lora',
+    anim: 'cinematic',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="dg1" cx="50%" cy="50%" r="70%">
+          <stop offset="0%" stop-color="#1a1530"/>
+          <stop offset="100%" stop-color="#08060f"/>
+        </radialGradient>
+        <radialGradient id="dg2" cx="50%" cy="50%" r="40%">
+          <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.18"/>
+          <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="280" height="140" fill="url(#dg1)"/>
+      <rect width="280" height="140" fill="url(#dg2)"/>
+      <!-- Corner ornaments -->
+      <path d="M10,10 L30,10 M10,10 L10,30" stroke="#fbbf24" stroke-width="1.5" fill="none" opacity="0.7"/>
+      <path d="M270,10 L250,10 M270,10 L270,30" stroke="#fbbf24" stroke-width="1.5" fill="none" opacity="0.7"/>
+      <path d="M10,130 L30,130 M10,130 L10,110" stroke="#fbbf24" stroke-width="1.5" fill="none" opacity="0.7"/>
+      <path d="M270,130 L250,130 M270,130 L270,110" stroke="#fbbf24" stroke-width="1.5" fill="none" opacity="0.7"/>
+      <!-- Center cross glow -->
+      <circle cx="140" cy="60" r="28" fill="none" stroke="#fbbf24" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="140" cy="60" r="18" fill="none" stroke="#fbbf24" stroke-width="0.5" opacity="0.3"/>
+      <line x1="140" y1="34" x2="140" y2="86" stroke="#fbbf24" stroke-width="1" opacity="0.5"/>
+      <line x1="114" y1="60" x2="166" y2="60" stroke="#fbbf24" stroke-width="1" opacity="0.5"/>
+      <!-- Stars -->
+      <circle cx="40" cy="25" r="1" fill="#fbbf24" opacity="0.6"/>
+      <circle cx="220" cy="18" r="1.2" fill="#fbbf24" opacity="0.5"/>
+      <circle cx="70" cy="110" r="0.8" fill="#fbbf24" opacity="0.4"/>
+      <circle cx="200" cy="105" r="1" fill="#fbbf24" opacity="0.6"/>
+      <!-- Title bar -->
+      <rect x="55" y="95" width="170" height="1" fill="#fbbf24" opacity="0.3"/>
+      <text x="140" y="115" text-anchor="middle" fill="#fbbf24" font-size="7" font-family="serif" letter-spacing="3" opacity="0.8">CINEMATIC · FAITH</text>
+    </svg>`,
+    theme: {
+      bg: '#08060f', surface: '#1a1530', accent: '#fbbf24', accent2: '#f59e0b',
+      text: '#f5e6c8', soft: '#c4a96b',
+      description: 'deep navy-black background, rich gold (#fbbf24) as primary accent, warm ivory text, radial gradient halo on each slide, ornate corner bracket decorations, glowing gold cross motifs, scattered star particles'
+    }
+  },
+  {
+    id: 'deep-space',
+    name: 'Deep Space',
+    cat: ['all','dark','modern'],
+    desc: 'Pure black · Electric cyan · Star field',
+    font: 'Syne + Space Mono',
+    anim: 'manim',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="ds1" cx="30%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#001822"/>
+          <stop offset="100%" stop-color="#000508"/>
+        </radialGradient>
+      </defs>
+      <rect width="280" height="140" fill="url(#ds1)"/>
+      <!-- Grid lines -->
+      <line x1="0" y1="70" x2="280" y2="70" stroke="#00e5ff" stroke-width="0.3" opacity="0.15"/>
+      <line x1="140" y1="0" x2="140" y2="140" stroke="#00e5ff" stroke-width="0.3" opacity="0.15"/>
+      <!-- Stars scattered -->
+      <circle cx="20" cy="15" r="0.8" fill="#fff" opacity="0.7"/>
+      <circle cx="55" cy="38" r="1.2" fill="#00e5ff" opacity="0.6"/>
+      <circle cx="80" cy="12" r="0.6" fill="#fff" opacity="0.5"/>
+      <circle cx="200" cy="25" r="1" fill="#fff" opacity="0.6"/>
+      <circle cx="240" cy="10" r="0.8" fill="#00e5ff" opacity="0.5"/>
+      <circle cx="260" cy="45" r="1" fill="#fff" opacity="0.4"/>
+      <circle cx="30" cy="95" r="0.7" fill="#fff" opacity="0.6"/>
+      <circle cx="170" cy="120" r="1" fill="#00e5ff" opacity="0.4"/>
+      <circle cx="245" cy="110" r="0.8" fill="#fff" opacity="0.5"/>
+      <!-- Planet ring -->
+      <ellipse cx="200" cy="55" rx="32" ry="10" fill="none" stroke="#00e5ff" stroke-width="0.8" opacity="0.4"/>
+      <circle cx="200" cy="55" r="16" fill="#051a22" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+      <circle cx="200" cy="55" r="8" fill="#002030" opacity="0.8"/>
+      <!-- Data orbit lines -->
+      <path d="M60,70 Q100,30 140,70 Q180,110 220,70" stroke="#00e5ff" stroke-width="0.8" fill="none" opacity="0.3" stroke-dasharray="3,3"/>
+      <!-- Corner HUD -->
+      <rect x="8" y="8" width="30" height="20" rx="2" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+      <text x="12" y="18" fill="#00e5ff" font-size="5" font-family="monospace" opacity="0.6">SYS</text>
+      <text x="12" y="25" fill="#00e5ff" font-size="4" font-family="monospace" opacity="0.5">ONLINE</text>
+      <text x="140" y="112" text-anchor="middle" fill="#00e5ff" font-size="6.5" font-family="monospace" letter-spacing="3" opacity="0.7">DEEP SPACE · TECH</text>
+    </svg>`,
+    theme: {
+      bg: '#000508', surface: '#001018', accent: '#00e5ff', accent2: '#22d3ee',
+      text: '#e0f8ff', soft: '#6ab8cc',
+      description: 'pure black background, electric cyan (#00e5ff) as primary accent, cold white text, animated star-field canvas layer, neon grid-line overlays, planet/orbit SVG decorations on hero slides, monospace HUD-style captions, scanline texture'
+    }
+  },
+  {
+    id: 'forest-night',
+    name: 'Forest Night',
+    cat: ['all','dark','nature'],
+    desc: 'Dark green · Emerald glow · Organic particles',
+    font: 'Fraunces + DM Mono',
+    anim: 'cinematic',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="fn1" cx="50%" cy="100%" r="80%">
+          <stop offset="0%" stop-color="#012a16"/>
+          <stop offset="100%" stop-color="#050e08"/>
+        </radialGradient>
+      </defs>
+      <rect width="280" height="140" fill="url(#fn1)"/>
+      <!-- Moon -->
+      <circle cx="50" cy="30" r="18" fill="#061a0a" stroke="#34d399" stroke-width="0.6" opacity="0.5"/>
+      <circle cx="56" cy="27" r="15" fill="#061a0a" opacity="0.9"/>
+      <!-- Tree silhouettes -->
+      <path d="M0,140 L0,80 L12,80 L12,55 L18,55 L10,35 L22,42 L16,25 L28,35 L22,15 L34,30 L28,55 L34,55 L34,80 L46,80 L46,140" fill="#010d04" opacity="0.9"/>
+      <path d="M234,140 L234,85 L244,85 L244,62 L250,62 L242,44 L254,50 L248,33 L260,43 L254,62 L260,62 L260,85 L270,85 L270,140" fill="#010d04" opacity="0.8"/>
+      <!-- Fireflies -->
+      <circle cx="80" cy="75" r="1.5" fill="#34d399" opacity="0.8"/>
+      <circle cx="80" cy="75" r="4" fill="#34d399" opacity="0.1"/>
+      <circle cx="160" cy="55" r="1.2" fill="#34d399" opacity="0.6"/>
+      <circle cx="160" cy="55" r="3.5" fill="#34d399" opacity="0.1"/>
+      <circle cx="210" cy="80" r="1" fill="#6ee7b7" opacity="0.7"/>
+      <circle cx="110" cy="90" r="1.3" fill="#34d399" opacity="0.5"/>
+      <!-- Ground mist -->
+      <ellipse cx="140" cy="138" rx="130" ry="10" fill="#34d399" opacity="0.04"/>
+      <!-- Vine divider -->
+      <path d="M70,115 Q140,108 210,115" stroke="#34d399" stroke-width="0.6" fill="none" opacity="0.3" stroke-dasharray="2,4"/>
+      <text x="140" y="128" text-anchor="middle" fill="#34d399" font-size="6.5" font-family="serif" letter-spacing="3" opacity="0.7">FOREST · NATURE</text>
+    </svg>`,
+    theme: {
+      bg: '#050e08', surface: '#0a1c10', accent: '#34d399', accent2: '#10b981',
+      text: '#d1fae5', soft: '#6ee7b7',
+      description: 'very dark green-black background, emerald (#34d399) as primary accent, mint-white text, moon and tree silhouette SVG on opening slide, animated firefly particles drifting across slides, misty ground fog effect, organic vine divider lines, forest-at-night atmosphere'
+    }
+  },
+  {
+    id: 'crimson-dark',
+    name: 'Crimson Drama',
+    cat: ['all','dark'],
+    desc: 'Black · Deep red · Dramatic reveals',
+    font: 'Playfair Display + Source Serif',
+    anim: 'dramatic',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="cd1" cx="50%" cy="0%" r="80%">
+          <stop offset="0%" stop-color="#1a0505"/>
+          <stop offset="100%" stop-color="#080202"/>
+        </radialGradient>
+        <radialGradient id="cd2" cx="50%" cy="20%" r="50%">
+          <stop offset="0%" stop-color="#ef4444" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="280" height="140" fill="url(#cd1)"/>
+      <rect width="280" height="140" fill="url(#cd2)"/>
+      <!-- Diagonal slash lines -->
+      <line x1="0" y1="0" x2="280" y2="140" stroke="#ef4444" stroke-width="0.3" opacity="0.1"/>
+      <line x1="40" y1="0" x2="280" y2="120" stroke="#ef4444" stroke-width="0.2" opacity="0.08"/>
+      <!-- Red spotlight -->
+      <circle cx="140" cy="55" r="45" fill="#ef4444" opacity="0.05"/>
+      <!-- Geometric shield -->
+      <polygon points="140,18 175,40 175,75 140,97 105,75 105,40" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.35"/>
+      <polygon points="140,30 163,46 163,70 140,86 117,70 117,46" fill="none" stroke="#ef4444" stroke-width="0.5" opacity="0.2"/>
+      <!-- Center glyph -->
+      <line x1="140" y1="40" x2="140" y2="76" stroke="#ef4444" stroke-width="1.5" opacity="0.5"/>
+      <line x1="125" y1="58" x2="155" y2="58" stroke="#ef4444" stroke-width="1.5" opacity="0.5"/>
+      <!-- Blood drip effect (abstract) -->
+      <rect x="139" y="76" width="2" height="8" fill="#ef4444" opacity="0.3"/>
+      <ellipse cx="140" cy="85" rx="3" ry="2" fill="#ef4444" opacity="0.2"/>
+      <!-- Bottom bar -->
+      <rect x="0" y="132" width="280" height="8" fill="#ef4444" opacity="0.06"/>
+      <text x="140" y="121" text-anchor="middle" fill="#ef4444" font-size="6.5" font-family="serif" letter-spacing="4" opacity="0.7">CRIMSON · DRAMATIC</text>
+    </svg>`,
+    theme: {
+      bg: '#080202', surface: '#130404', accent: '#ef4444', accent2: '#dc2626',
+      text: '#fef2f2', soft: '#fca5a5',
+      description: 'charcoal-black background, deep crimson (#ef4444) as primary accent, sharp white text, dramatic red spotlight radial gradient, hexagonal shield SVG decorations, diagonal slash line overlays, high-contrast bold typography with dramatic slide-in reveals, strong theatrical lighting effects'
+    }
+  },
+  {
+    id: 'ivory-light',
+    name: 'Ivory Editorial',
+    cat: ['all','light','faith'],
+    desc: 'Warm cream · Terracotta · Clean editorial',
+    font: 'Playfair Display + Lora',
+    anim: 'minimal',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="280" height="140" fill="#faf7f2"/>
+      <!-- Ruled lines -->
+      <line x1="40" y1="40" x2="240" y2="40" stroke="#c2855a" stroke-width="0.5" opacity="0.3"/>
+      <line x1="40" y1="100" x2="240" y2="100" stroke="#c2855a" stroke-width="0.5" opacity="0.3"/>
+      <!-- Drop cap initial -->
+      <rect x="40" y="50" width="32" height="40" fill="#c2855a" opacity="0.12" rx="2"/>
+      <text x="56" y="78" text-anchor="middle" fill="#c2855a" font-size="28" font-family="serif" font-weight="bold" opacity="0.6">G</text>
+      <!-- Body text lines (simulated) -->
+      <rect x="82" y="55" width="120" height="4" rx="2" fill="#5c3d2a" opacity="0.2"/>
+      <rect x="82" y="65" width="100" height="4" rx="2" fill="#5c3d2a" opacity="0.15"/>
+      <rect x="82" y="75" width="110" height="4" rx="2" fill="#5c3d2a" opacity="0.2"/>
+      <rect x="82" y="85" width="90" height="4" rx="2" fill="#5c3d2a" opacity="0.15"/>
+      <!-- Decorative flourish -->
+      <path d="M100,105 Q140,98 180,105" stroke="#c2855a" stroke-width="1" fill="none" opacity="0.4"/>
+      <circle cx="140" cy="103" r="2" fill="#c2855a" opacity="0.4"/>
+      <!-- Margin ornament -->
+      <circle cx="30" cy="70" r="3" fill="#c2855a" opacity="0.3"/>
+      <circle cx="258" cy="70" r="3" fill="#c2855a" opacity="0.3"/>
+      <text x="140" y="125" text-anchor="middle" fill="#c2855a" font-size="6.5" font-family="serif" letter-spacing="3" opacity="0.7">EDITORIAL · WARM</text>
+    </svg>`,
+    theme: {
+      bg: '#faf7f2', surface: '#f3ede4', accent: '#c2855a', accent2: '#a06040',
+      text: '#2c1a10', soft: '#7a5a40',
+      description: 'warm ivory/cream background, deep charcoal text, terracotta (#c2855a) as accent color, elegant editorial newspaper layout, decorative drop-cap initial letters on key slides, subtle ruled line dividers, margin ornaments, classical serif typography, generous white space, soft warm shadows'
+    }
+  },
+  {
+    id: 'royal-purple',
+    name: 'Royal Purple',
+    cat: ['all','dark','faith'],
+    desc: 'Deep violet · Lavender · Mystical geometry',
+    font: 'Cinzel Decorative + Fraunces',
+    anim: 'dramatic',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="rp1" cx="50%" cy="40%" r="70%">
+          <stop offset="0%" stop-color="#150a2e"/>
+          <stop offset="100%" stop-color="#06020f"/>
+        </radialGradient>
+      </defs>
+      <rect width="280" height="140" fill="url(#rp1)"/>
+      <!-- Sacred geometry - Star of David / hexagram -->
+      <polygon points="140,20 162,58 118,58" fill="none" stroke="#a78bfa" stroke-width="0.8" opacity="0.5"/>
+      <polygon points="140,76 118,38 162,38" fill="none" stroke="#a78bfa" stroke-width="0.8" opacity="0.5"/>
+      <!-- Outer circle -->
+      <circle cx="140" cy="48" r="36" fill="none" stroke="#a78bfa" stroke-width="0.5" opacity="0.25" stroke-dasharray="4,4"/>
+      <!-- Inner glow dot -->
+      <circle cx="140" cy="48" r="4" fill="#a78bfa" opacity="0.5"/>
+      <circle cx="140" cy="48" r="10" fill="#a78bfa" opacity="0.08"/>
+      <!-- Ambient particles -->
+      <circle cx="30" cy="20" r="1" fill="#c4b5fd" opacity="0.5"/>
+      <circle cx="250" cy="30" r="1.2" fill="#c4b5fd" opacity="0.4"/>
+      <circle cx="60" cy="110" r="0.8" fill="#a78bfa" opacity="0.6"/>
+      <circle cx="220" cy="115" r="1" fill="#c4b5fd" opacity="0.5"/>
+      <!-- Arch -->
+      <path d="M60,140 Q60,90 140,82 Q220,90 220,140" fill="none" stroke="#a78bfa" stroke-width="0.6" opacity="0.2"/>
+      <text x="140" y="122" text-anchor="middle" fill="#c4b5fd" font-size="6.5" font-family="serif" letter-spacing="3" opacity="0.7">ROYAL · MYSTICAL</text>
+    </svg>`,
+    theme: {
+      bg: '#06020f', surface: '#0f0820', accent: '#a78bfa', accent2: '#7c3aed',
+      text: '#ede9fe', soft: '#c4b5fd',
+      description: 'deep violet-black background, lavender (#a78bfa) as primary accent, pale lilac text, sacred geometry Star of David SVG on opening, circular mandala overlay patterns, gothic arch SVG shapes, mystical atmosphere with soft ambient particle glow, royal regality'
+    }
+  },
+  {
+    id: 'arctic-minimal',
+    name: 'Arctic Minimal',
+    cat: ['all','light','modern'],
+    desc: 'White · Ice blue · Clean lines',
+    font: 'Syne + DM Mono',
+    anim: 'minimal',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="280" height="140" fill="#f8faff"/>
+      <!-- Ice crystal top-left -->
+      <polygon points="20,10 30,25 20,40 10,25" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.5"/>
+      <polygon points="20,17 26,25 20,33 14,25" fill="#38bdf8" opacity="0.1"/>
+      <!-- Grid -->
+      <line x1="0" y1="70" x2="280" y2="70" stroke="#bae6fd" stroke-width="0.5" opacity="0.5"/>
+      <!-- Minimal type block simulation -->
+      <rect x="60" y="40" width="5" height="50" fill="#0ea5e9" opacity="0.8"/>
+      <rect x="75" y="50" width="140" height="8" rx="2" fill="#0c1a2e" opacity="0.12"/>
+      <rect x="75" y="64" width="110" height="5" rx="2" fill="#0c1a2e" opacity="0.08"/>
+      <rect x="75" y="74" width="120" height="5" rx="2" fill="#0c1a2e" opacity="0.08"/>
+      <rect x="75" y="84" width="90" height="5" rx="2" fill="#0c1a2e" opacity="0.06"/>
+      <!-- Right accent bar -->
+      <rect x="240" y="30" width="2" height="80" fill="#38bdf8" opacity="0.3"/>
+      <!-- Snowflake decoration (simple) -->
+      <line x1="255" y1="30" x2="265" y2="40" stroke="#38bdf8" stroke-width="0.8" opacity="0.4"/>
+      <line x1="265" y1="30" x2="255" y2="40" stroke="#38bdf8" stroke-width="0.8" opacity="0.4"/>
+      <line x1="260" y1="27" x2="260" y2="43" stroke="#38bdf8" stroke-width="0.8" opacity="0.4"/>
+      <circle cx="260" cy="35" r="3" fill="none" stroke="#38bdf8" stroke-width="0.5" opacity="0.4"/>
+      <text x="140" y="122" text-anchor="middle" fill="#38bdf8" font-size="6.5" font-family="sans-serif" letter-spacing="4" opacity="0.7">ARCTIC · MINIMAL</text>
+    </svg>`,
+    theme: {
+      bg: '#f8faff', surface: '#eef6ff', accent: '#0ea5e9', accent2: '#38bdf8',
+      text: '#0c1a2e', soft: '#5490b0',
+      description: 'crisp white/ice-blue background, sky blue (#0ea5e9) as primary accent, dark navy text, ultra-clean minimal layout with bold left accent bar, snowflake SVG decorations, geometric ice crystal motifs, stark typographic hierarchy, generous negative space, scanline-free clean aesthetic'
+    }
+  },
+  {
+    id: 'sunset-warmth',
+    name: 'Sunset Warmth',
+    cat: ['all','light','nature','faith'],
+    desc: 'Warm amber · Deep orange · Gradient sky',
+    font: 'Fraunces + Lora',
+    anim: 'cinematic',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sw1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ff8c42"/>
+          <stop offset="50%" stop-color="#ffb347"/>
+          <stop offset="100%" stop-color="#ffd166"/>
+        </linearGradient>
+        <linearGradient id="sw2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#7c3a00" stop-opacity="0.0"/>
+          <stop offset="100%" stop-color="#3d1800" stop-opacity="0.5"/>
+        </linearGradient>
+      </defs>
+      <rect width="280" height="140" fill="url(#sw1)"/>
+      <rect width="280" height="140" fill="url(#sw2)"/>
+      <!-- Sun -->
+      <circle cx="140" cy="75" r="38" fill="#ffe066" opacity="0.35"/>
+      <circle cx="140" cy="75" r="24" fill="#ffcc00" opacity="0.5"/>
+      <!-- Sun rays -->
+      <line x1="140" y1="30" x2="140" y2="20" stroke="#ffe066" stroke-width="1.5" opacity="0.5"/>
+      <line x1="168" y1="47" x2="175" y2="40" stroke="#ffe066" stroke-width="1.5" opacity="0.5"/>
+      <line x1="168" y1="103" x2="175" y2="110" stroke="#ffe066" stroke-width="1.5" opacity="0.5"/>
+      <line x1="112" y1="47" x2="105" y2="40" stroke="#ffe066" stroke-width="1.5" opacity="0.5"/>
+      <line x1="112" y1="103" x2="105" y2="110" stroke="#ffe066" stroke-width="1.5" opacity="0.5"/>
+      <!-- Horizon land -->
+      <path d="M0,115 Q70,100 140,110 Q210,120 280,105 L280,140 L0,140Z" fill="#3d1800" opacity="0.6"/>
+      <!-- Flying birds (silhouettes) -->
+      <path d="M60,45 Q65,40 70,45" stroke="#3d1800" stroke-width="1" fill="none" opacity="0.5"/>
+      <path d="M75,38 Q80,33 85,38" stroke="#3d1800" stroke-width="1" fill="none" opacity="0.4"/>
+      <text x="140" y="133" text-anchor="middle" fill="#3d1800" font-size="6.5" font-family="serif" letter-spacing="3" opacity="0.7">SUNSET · WARMTH</text>
+    </svg>`,
+    theme: {
+      bg: '#1a0a00', surface: '#2d1200', accent: '#ff8c42', accent2: '#ffb347',
+      text: '#fff8f0', soft: '#ffb080',
+      description: 'warm amber-to-orange gradient sky background darkening to charcoal for readability, deep amber (#ff8c42) as primary accent, cream-white text, sun with radiating ray SVG on hero slides, bird silhouette particles, dark earth horizon SVG, warm cinematic atmosphere, glowing halo effects'
+    }
+  },
+  {
+    id: 'midnight-bible',
+    name: 'Midnight Scripture',
+    cat: ['all','dark','faith'],
+    desc: 'Night blue · Candlelight gold · Sacred scrolls',
+    font: 'Cinzel Decorative + Lora',
+    anim: 'cinematic',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="mb1" cx="50%" cy="60%" r="70%">
+          <stop offset="0%" stop-color="#0d1729"/>
+          <stop offset="100%" stop-color="#04080f"/>
+        </radialGradient>
+        <radialGradient id="mb2" cx="50%" cy="70%" r="35%">
+          <stop offset="0%" stop-color="#d4a017" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#d4a017" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="280" height="140" fill="url(#mb1)"/>
+      <rect width="280" height="140" fill="url(#mb2)"/>
+      <!-- Open book shape -->
+      <path d="M80,40 L80,105 Q140,100 140,100 Q140,100 200,105 L200,40 Q140,45 140,45 Q140,45 80,40Z" fill="#0d1520" stroke="#d4a017" stroke-width="0.8" opacity="0.6"/>
+      <line x1="140" y1="45" x2="140" y2="100" stroke="#d4a017" stroke-width="0.8" opacity="0.4"/>
+      <!-- Text lines on pages -->
+      <line x1="90" y1="55" x2="130" y2="54" stroke="#d4a017" stroke-width="0.5" opacity="0.3"/>
+      <line x1="90" y1="62" x2="128" y2="61" stroke="#d4a017" stroke-width="0.5" opacity="0.25"/>
+      <line x1="90" y1="69" x2="132" y2="68" stroke="#d4a017" stroke-width="0.5" opacity="0.3"/>
+      <line x1="90" y1="76" x2="126" y2="75" stroke="#d4a017" stroke-width="0.5" opacity="0.2"/>
+      <line x1="150" y1="55" x2="190" y2="54" stroke="#d4a017" stroke-width="0.5" opacity="0.3"/>
+      <line x1="150" y1="62" x2="188" y2="61" stroke="#d4a017" stroke-width="0.5" opacity="0.25"/>
+      <line x1="150" y1="69" x2="192" y2="68" stroke="#d4a017" stroke-width="0.5" opacity="0.3"/>
+      <!-- Candle -->
+      <rect x="136" y="28" width="8" height="14" rx="1" fill="#d4a017" opacity="0.3"/>
+      <ellipse cx="140" cy="26" rx="5" ry="8" fill="#ffd700" opacity="0.4"/>
+      <circle cx="140" cy="22" r="4" fill="#fff9e0" opacity="0.6"/>
+      <!-- Glow halo from candle -->
+      <circle cx="140" cy="22" r="18" fill="#d4a017" opacity="0.05"/>
+      <text x="140" y="125" text-anchor="middle" fill="#d4a017" font-size="6.5" font-family="serif" letter-spacing="3" opacity="0.7">SCRIPTURE · CANDLELIGHT</text>
+    </svg>`,
+    theme: {
+      bg: '#04080f', surface: '#0d1520', accent: '#d4a017', accent2: '#f0c040',
+      text: '#fff9e0', soft: '#c8a860',
+      description: 'deep midnight blue background, warm candlelight gold (#d4a017) as primary accent, parchment-cream text, open Bible/scroll SVG as centerpiece on title slides, candle flame glow effect, handwritten-style verse callout boxes, aged paper texture overlay, sacred and reverent atmosphere'
+    }
+  },
+  {
+    id: 'neon-city',
+    name: 'Neon City',
+    cat: ['all','dark','modern'],
+    desc: 'Black · Neon pink + cyan · Cyberpunk grid',
+    font: 'Syne + Space Mono',
+    anim: 'dramatic',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <rect width="280" height="140" fill="#05000d"/>
+      <!-- Perspective grid floor -->
+      <line x1="140" y1="80" x2="0" y2="140" stroke="#f0f" stroke-width="0.4" opacity="0.3"/>
+      <line x1="140" y1="80" x2="60" y2="140" stroke="#f0f" stroke-width="0.4" opacity="0.2"/>
+      <line x1="140" y1="80" x2="120" y2="140" stroke="#f0f" stroke-width="0.3" opacity="0.15"/>
+      <line x1="140" y1="80" x2="280" y2="140" stroke="#f0f" stroke-width="0.4" opacity="0.3"/>
+      <line x1="140" y1="80" x2="220" y2="140" stroke="#f0f" stroke-width="0.4" opacity="0.2"/>
+      <line x1="140" y1="80" x2="160" y2="140" stroke="#f0f" stroke-width="0.3" opacity="0.15"/>
+      <!-- Horizontal grid lines -->
+      <line x1="0" y1="100" x2="280" y2="100" stroke="#f0f" stroke-width="0.3" opacity="0.15"/>
+      <line x1="0" y1="115" x2="280" y2="115" stroke="#f0f" stroke-width="0.3" opacity="0.12"/>
+      <line x1="0" y1="128" x2="280" y2="128" stroke="#f0f" stroke-width="0.3" opacity="0.1"/>
+      <!-- Skyline buildings -->
+      <rect x="10" y="55" width="20" height="25" fill="#0a0015" stroke="#f0f" stroke-width="0.5" opacity="0.5"/>
+      <rect x="35" y="42" width="15" height="38" fill="#0a0015" stroke="#00ffff" stroke-width="0.5" opacity="0.4"/>
+      <rect x="55" y="60" width="18" height="20" fill="#0a0015" stroke="#f0f" stroke-width="0.5" opacity="0.5"/>
+      <rect x="207" y="50" width="18" height="30" fill="#0a0015" stroke="#00ffff" stroke-width="0.5" opacity="0.4"/>
+      <rect x="230" y="40" width="22" height="40" fill="#0a0015" stroke="#f0f" stroke-width="0.5" opacity="0.5"/>
+      <rect x="255" y="58" width="14" height="22" fill="#0a0015" stroke="#00ffff" stroke-width="0.5" opacity="0.4"/>
+      <!-- Neon glow center sign -->
+      <rect x="100" y="28" width="80" height="30" rx="3" fill="none" stroke="#f0f" stroke-width="1" opacity="0.6"/>
+      <rect x="104" y="32" width="72" height="22" rx="2" fill="#f0f" opacity="0.06"/>
+      <text x="140" y="47" text-anchor="middle" fill="#f0f" font-size="9" font-family="monospace" letter-spacing="2" opacity="0.8">NEON</text>
+      <!-- Cyan accent lines -->
+      <line x1="0" y1="80" x2="280" y2="80" stroke="#00ffff" stroke-width="0.5" opacity="0.2"/>
+      <text x="140" y="130" text-anchor="middle" fill="#00ffff" font-size="6" font-family="monospace" letter-spacing="4" opacity="0.7">CYBER · NEON CITY</text>
+    </svg>`,
+    theme: {
+      bg: '#05000d', surface: '#0a0018', accent: '#ff00ff', accent2: '#00ffff',
+      text: '#ffffff', soft: '#cc88cc',
+      description: 'pure black background, neon magenta (#ff00ff) and cyan (#00ffff) dual-accent scheme, stark white text, vanishing-point perspective grid floor, cyberpunk city skyline SVG silhouette, neon sign boxes for quotes, glitch text animation on transitions, synthwave retro-futuristic vibe, scanline texture overlay'
+    }
+  },
+  {
+    id: 'earth-terracotta',
+    name: 'Earth & Clay',
+    cat: ['all','light','nature','faith'],
+    desc: 'Terracotta · Sand · Warm earth tones',
+    font: 'Playfair Display + Lora',
+    anim: 'minimal',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="et1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f5e6d3"/>
+          <stop offset="100%" stop-color="#e8d0b8"/>
+        </linearGradient>
+      </defs>
+      <rect width="280" height="140" fill="url(#et1)"/>
+      <!-- Clay texture circles (organic shapes) -->
+      <circle cx="240" cy="25" r="40" fill="#c2855a" opacity="0.08"/>
+      <circle cx="40" cy="120" r="50" fill="#8b4513" opacity="0.06"/>
+      <!-- Tribal/pottery border pattern top -->
+      <rect x="0" y="0" width="280" height="10" fill="#c2855a" opacity="0.3"/>
+      <rect x="0" y="130" width="280" height="10" fill="#c2855a" opacity="0.3"/>
+      <!-- Zigzag pattern -->
+      <path d="M0,5 L14,10 L28,5 L42,10 L56,5 L70,10 L84,5 L98,10 L112,5 L126,10 L140,5 L154,10 L168,5 L182,10 L196,5 L210,10 L224,5 L238,10 L252,5 L266,10 L280,5" fill="none" stroke="#8b4513" stroke-width="1" opacity="0.4"/>
+      <!-- Pot/vessel SVG center -->
+      <path d="M115,50 Q110,55 108,70 Q106,90 115,100 Q130,108 140,108 Q150,108 165,100 Q174,90 172,70 Q170,55 165,50 Q158,44 150,42 Q140,40 130,42 Q122,44 115,50Z" fill="#c2855a" opacity="0.2" stroke="#8b4513" stroke-width="1" opacity="0.4"/>
+      <ellipse cx="140" cy="48" rx="22" ry="7" fill="#e8d0b8" stroke="#8b4513" stroke-width="0.8" opacity="0.4"/>
+      <!-- Leaf branch -->
+      <path d="M50,70 Q80,60 110,75" stroke="#5a7a3a" stroke-width="1" fill="none" opacity="0.35"/>
+      <ellipse cx="70" cy="65" rx="8" ry="5" fill="#5a7a3a" opacity="0.2" transform="rotate(-20,70,65)"/>
+      <ellipse cx="90" cy="62" rx="7" ry="4" fill="#5a7a3a" opacity="0.2" transform="rotate(-10,90,62)"/>
+      <text x="140" y="125" text-anchor="middle" fill="#8b4513" font-size="6.5" font-family="serif" letter-spacing="3" opacity="0.7">EARTH · TERRACOTTA</text>
+    </svg>`,
+    theme: {
+      bg: '#e8d0b8', surface: '#f2e4d0', accent: '#c2855a', accent2: '#8b4513',
+      text: '#2c1505', soft: '#8b6040',
+      description: 'warm sand/terracotta gradient background, deep brown (#8b4513) and clay orange (#c2855a) as dual accents, dark earth text, tribal pottery border SVG pattern on top/bottom edges, hand-thrown clay pot SVG centerpiece, botanical leaf branch illustrations, organic earthy warmth, no sharp lines'
+    }
+  },
+  {
+    id: 'ocean-deep',
+    name: 'Ocean Deep',
+    cat: ['all','dark','nature'],
+    desc: 'Deep teal · Seafoam · Flowing waves',
+    font: 'Fraunces + Source Serif',
+    anim: 'cinematic',
+    svg: `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="od1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#001f3a"/>
+          <stop offset="100%" stop-color="#002f50"/>
+        </linearGradient>
+        <radialGradient id="od2" cx="40%" cy="50%" r="60%">
+          <stop offset="0%" stop-color="#0e7490" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#0e7490" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="280" height="140" fill="url(#od1)"/>
+      <rect width="280" height="140" fill="url(#od2)"/>
+      <!-- Waves -->
+      <path d="M0,90 Q35,78 70,90 Q105,102 140,90 Q175,78 210,90 Q245,102 280,90" fill="none" stroke="#67e8f9" stroke-width="1.2" opacity="0.35"/>
+      <path d="M0,100 Q35,88 70,100 Q105,112 140,100 Q175,88 210,100 Q245,112 280,100" fill="none" stroke="#67e8f9" stroke-width="0.8" opacity="0.25"/>
+      <path d="M0,110 Q35,98 70,110 Q105,122 140,110 Q175,98 210,110 Q245,122 280,110" fill="none" stroke="#22d3ee" stroke-width="0.6" opacity="0.2"/>
+      <!-- Bubbles -->
+      <circle cx="50" cy="60" r="4" fill="none" stroke="#67e8f9" stroke-width="0.6" opacity="0.4"/>
+      <circle cx="80" cy="40" r="2.5" fill="none" stroke="#67e8f9" stroke-width="0.6" opacity="0.35"/>
+      <circle cx="220" cy="55" r="5" fill="none" stroke="#22d3ee" stroke-width="0.6" opacity="0.3"/>
+      <circle cx="180" cy="35" r="3" fill="none" stroke="#67e8f9" stroke-width="0.6" opacity="0.4"/>
+      <!-- Seaweed -->
+      <path d="M240,140 Q245,120 240,105 Q235,90 242,75 Q248,60 244,45" stroke="#059669" stroke-width="1.5" fill="none" opacity="0.3" stroke-linecap="round"/>
+      <path d="M250,140 Q256,118 251,102 Q246,86 253,70" stroke="#10b981" stroke-width="1.2" fill="none" opacity="0.25" stroke-linecap="round"/>
+      <!-- Light beam from surface -->
+      <polygon points="120,0 160,0 180,80 100,80" fill="#67e8f9" opacity="0.03"/>
+      <text x="140" y="128" text-anchor="middle" fill="#67e8f9" font-size="6.5" font-family="serif" letter-spacing="3" opacity="0.7">OCEAN · DEEP WATER</text>
+    </svg>`,
+    theme: {
+      bg: '#001526', surface: '#001f3a', accent: '#22d3ee', accent2: '#0e7490',
+      text: '#e0f8ff', soft: '#6ec8d8',
+      description: 'deep ocean navy background, teal/cyan (#22d3ee) as primary accent, aqua-white text, animated wave path SVGs sweeping across slides, rising bubble particles, swaying seaweed SVG silhouettes on edge, light beam crepuscular ray effect from top, deep water mystery atmosphere'
+    }
+  }
+];
+
+// ── TEMPLATE STATE ────────────────────────
+let selectedTemplateId = 'dark-gold';
+
+// ── RENDER GALLERY ───────────────────────
+function renderGallery(cat = 'all') {
+  const gallery = document.getElementById('template-gallery');
+  const filtered = cat === 'all' ? TEMPLATES : TEMPLATES.filter(t => t.cat.includes(cat));
+
+  gallery.innerHTML = filtered.map(t => `
+    <div class="tpl-card ${t.id === selectedTemplateId ? 'selected' : ''}"
+         data-id="${t.id}"
+         onclick="selectTemplate('${t.id}')">
+      <div class="tpl-preview">${t.svg}</div>
+      <div class="tpl-info">
+        <div class="tpl-name">${t.name}</div>
+        <div class="tpl-desc">${t.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectTemplate(id) {
+  selectedTemplateId = id;
+  const tpl = TEMPLATES.find(t => t.id === id);
+  document.getElementById('selected-badge').textContent = '✦ ' + tpl.name;
+  // Update star bg chip hint based on template category
+  renderGallery(document.querySelector('.tpl-tab.active').dataset.cat);
+}
+
+// ── CATEGORY TABS ─────────────────────────
+document.querySelectorAll('.tpl-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tpl-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderGallery(tab.dataset.cat);
+  });
+});
+
+// ── CHIP TOGGLES ─────────────────────────
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => chip.classList.toggle('on'));
+});
+
+// ── STATE ─────────────────────────────────
+let lastCSV = '';
+let lastPrompt = '';
+
+// ── HELPERS ───────────────────────────────
+function getChips() {
+  const active = {};
+  document.querySelectorAll('.chip.on').forEach(c => { active[c.dataset.key] = true; });
+  return active;
+}
+function wordCount(str) { return str.trim().split(/\s+/).filter(Boolean).length; }
+
+function detectSlideCount(text, opt) {
+  if (opt !== 'auto') return parseInt(opt);
+  const wc = wordCount(text);
+  if (wc < 150) return 3;
+  if (wc < 350) return 5;
+  if (wc < 600) return 7;
+  return 9;
+}
+
+function fontDescription(f) {
+  const map = {
+    'template':        null, // resolved from template
+    'cinzel-lora':     'Cinzel Decorative (headings) + Lora (body) — elegant, classical, religious/literary feel',
+    'fraunces-dm':     'Fraunces (headings) + DM Mono (labels/captions) — warm, literary, editorial',
+    'playfair-source': 'Playfair Display (headings) + Source Serif 4 (body) — traditional, newspaper, authoritative',
+    'syne-space':      'Syne (headings) + Space Mono (labels) — modern, geometric, editorial',
+    'auto':            'choose fonts that match the content tone and visual theme, avoiding generic system fonts'
+  };
+  return map[f] || map['auto'];
+}
+
+// ── GENERATE PROMPT ───────────────────────
+function generatePrompt() {
+  const source = document.getElementById('source-text').value.trim();
+  if (!source) { alert('Please paste some source text first.'); return; }
+
+  const btn = document.getElementById('btn-gen');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Building Prompt…';
+
+  setTimeout(() => {
+    try { buildPrompt(source); }
+    finally {
+      btn.disabled = false;
+      btn.innerHTML = '✦ Generate Prompt + CSV';
+    }
+  }, 50);
+}
+
+function buildPrompt(source) {
+  const slideOpt  = document.getElementById('opt-slides').value;
+  const fontOpt   = document.getElementById('opt-font').value;
+  const tone      = document.getElementById('opt-tone').value;
+  const speed     = document.getElementById('opt-speed').value;
+  const animOpt   = document.getElementById('opt-anim').value;
+  const chips     = getChips();
+  const slideCount = detectSlideCount(source, slideOpt);
+
+  const tpl = TEMPLATES.find(t => t.id === selectedTemplateId);
+  const theme = tpl.theme;
+  const fontDesc = fontOpt === 'template' ? `${tpl.font} (matched to template)` : fontDescription(fontOpt);
+  const animStyle = animOpt === 'template' ? tpl.anim : animOpt;
+
+  const features = [];
+  if (chips.starfield)      features.push('animated star-field or particle canvas layer covering the background');
+  if (chips.progress)       features.push('horizontal progress bar at bottom showing slide completion percentage');
+  if (chips.tts)            features.push('Web Speech API auto-narration (SpeechSynthesisUtterance) — reads narration automatically on each slide advance');
+  if (chips.ripple)         features.push('tap/click ripple animation emanating from touch/click point');
+  if (chips.diagrams)       features.push('unique SVG diagram or visual metaphor on each slide (relevant to content)');
+  if (chips.particles)      features.push('floating ambient particle system (subtle, 30-60 particles, drift + fade)');
+  if (chips.countdown)      features.push('auto-advance countdown timer (visible progress arc per slide)');
+  if (chips.csv)            features.push('narration CSV block appended after </html>');
+  if (chips.keyboard)       features.push('keyboard navigation: ArrowRight/Space=next, ArrowLeft=prev, R=restart');
+  if (chips.loop)           features.push('loop back to slide 1 after last slide');
+  if (chips.svgdeco)        features.push('rich SVG decorative elements per slide — ornamental frames, borders, and thematic illustrations that match the template aesthetic');
+  if (chips.glassmorphism)  features.push('glassmorphism card panels (backdrop-filter: blur, semi-transparent surfaces with border glow)');
+
+  const prompt = `══════════════════════════════════════════════
+MANIMFORGE — ANIMATED HTML SLIDE DECK PROMPT
+Template: ${tpl.name}  |  Theme ID: ${tpl.id}
+══════════════════════════════════════════════
+
+MISSION
+══════════════════════════════════════════════
+
+You are a master HTML/CSS/JS developer and visual designer. Your task is to transform the SOURCE TEXT below into a single, self-contained, animated HTML presentation (slide deck) — modelled after Manim-style mathematical animations but applied to the content's subject matter.
+
+The output must be ONE complete HTML file with all CSS in <style> and all JavaScript in <script>. No external JS libraries. Google Fonts are allowed via @import.
+
+══════════════════════════════════════════════
+DESIGN TEMPLATE: ${tpl.name.toUpperCase()}
+══════════════════════════════════════════════
+
+VISUAL IDENTITY:
+${theme.description}
+
+COLOR SYSTEM:
+  Background:  ${theme.bg}
+  Surface:     ${theme.surface}
+  Accent 1:    ${theme.accent}
+  Accent 2:    ${theme.accent2}
+  Body Text:   ${theme.text}
+  Soft Text:   ${theme.soft}
+
+FONT PAIRING: ${fontDesc}
+
+ANIMATION STYLE: ${animStyle}
+${animStyle === 'manim'     ? '  → Geometric drawing animations, elements constructed stroke-by-stroke, mathematical reveal sequences' : ''}
+${animStyle === 'cinematic' ? '  → Film-like motion: parallax layers, dissolve transitions, smooth camera-pan illusion, atmospheric depth' : ''}
+${animStyle === 'minimal'   ? '  → Restrained elegance: clean opacity fades, subtle upward slides, refined whitespace choreography' : ''}
+${animStyle === 'dramatic'  ? '  → High-impact reveals: fast slide-in from edges, scale bounces, bold text stamp effects, sharp cuts' : ''}
+
+══════════════════════════════════════════════
+SLIDE ARCHITECTURE  (${slideCount} slides total)
+══════════════════════════════════════════════
+
+Build exactly ${slideCount} slides. Each slide must be a full-viewport div (position:fixed or equivalent) with its own unique visual layout. DO NOT repeat the same layout twice.
+
+Required variety across the ${slideCount} slides:
+  Slide 1 — TITLE CARD: Full visual impact opener. Animated title reveal, prominent SVG centerpiece from template, subtle ambient particle effect.
+  Slide 2 — KEY VERSE / HOOK: Pull quote or central idea. Large typographic treatment. Decorative SVG rule lines.
+  Slides 3–${slideCount-1} — BODY SLIDES: Each covers one key section. Alternate between:
+    a) Text-left / SVG-diagram-right layout
+    b) Full-width quote card with large decorative initial letter
+    c) Icon grid (3-4 points with SVG icons each)
+    d) Numbered list with animated reveal per item
+  Slide ${slideCount} — CLOSING SLIDE: Recap or call to action. Restart/replay button. Lingering atmospheric animation.
+
+NAVIGATION:
+  • Click/tap anywhere to advance
+  • Swipe left/right on mobile (touchstart/touchend with 50px threshold)
+  • First slide starts animating immediately on page load (no click needed)
+  • On last slide, show a restart indicator
+
+PROGRESS:
+  • Progress dots at bottom: one dot per slide, active dot highlighted in accent color
+  • Each dot is clickable to jump to that slide
+
+══════════════════════════════════════════════
+FEATURES TO IMPLEMENT
+══════════════════════════════════════════════
+${features.length > 0 ? features.map((f,i) => `  ${i+1}. ${f}`).join('\n') : '  • Basic click/tap navigation only'}
+
+══════════════════════════════════════════════
+NARRATION SCRIPTS (TTS)
+══════════════════════════════════════════════
+
+Write a scripts[] array in JavaScript. Each element is the full narration text for that slide. Rules:
+  • Tone: ${tone}
+  • TTS rate: ${speed} (pass to SpeechSynthesisUtterance.rate)
+  • Each narration: 25–60 words, complete sentences, warm and engaging
+  • Scripts must flow naturally when read aloud — no bullet lists, no slide-number references
+  • Auto-play narration when each slide becomes active
+  • Cancel previous utterance before starting new one
+  • Provide a mute/unmute toggle button (small, bottom-right corner)
+
+══════════════════════════════════════════════
+SVG ILLUSTRATION GUIDE
+══════════════════════════════════════════════
+
+Each slide must include at least one custom SVG element relevant to BOTH the content AND the template aesthetic. Examples based on this template:
+
+${tpl.id === 'dark-gold'     ? '  • Gold ornamental borders, radiating star of light, cross motif with glow, ancient coin texture pattern' : ''}
+${tpl.id === 'deep-space'    ? '  • Planet with ring, constellation lines connecting content points, warp-speed lines, circuit board overlay' : ''}
+${tpl.id === 'forest-night'  ? '  • Tree silhouette canopy, owl on branch, moon phase progression, firefly cluster, leaf mandala' : ''}
+${tpl.id === 'crimson-dark'  ? '  • Hexagonal shield crest, sword motif, dramatic slash rays, blood-drop accent, burning torch' : ''}
+${tpl.id === 'ivory-light'   ? '  • Quill pen, botanical scroll border, aged parchment fold lines, wax seal, feather flourish' : ''}
+${tpl.id === 'royal-purple'  ? '  • Hexagram/Star of David, crown glyph, gothic arch, mandala ring, dove silhouette' : ''}
+${tpl.id === 'arctic-minimal' ? '  • Snowflake geometry, ice crystal shard, minimalist mountain outline, clean bracket frames' : ''}
+${tpl.id === 'sunset-warmth' ? '  • Sun with rays, horizon landscape, soaring bird, palm silhouette, cloud bank' : ''}
+${tpl.id === 'midnight-bible'? '  • Open Bible pages, candle flame, dove in flight, olive branch, prayer hands outline' : ''}
+${tpl.id === 'neon-city'     ? '  • City skyline, neon sign box, glitch artifact, radar sweep circle, binary rain column' : ''}
+${tpl.id === 'earth-terracotta' ? '  • Clay pot vessel, leaf branch, tribal pattern band, seed sprouting, sun wheel mandala' : ''}
+${tpl.id === 'ocean-deep'    ? '  • Wave paths, rising bubbles, fish silhouette, anchor, lighthouse beam, coral branch' : ''}
+All SVGs must be inline (<svg>…</svg>) — no external image files.
+
+══════════════════════════════════════════════
+SOURCE TEXT TO TRANSFORM
+══════════════════════════════════════════════
+
+${source}
+
+══════════════════════════════════════════════
+CODE QUALITY STANDARDS
+══════════════════════════════════════════════
+
+  1. Single HTML file — all CSS in <style>, all JS in <script>, no external JS libraries except Google Fonts
+  2. Mobile-first: works perfectly on a phone screen (375px wide). Use clamp() for font sizes.
+  3. Touch events: support both click and touchstart for navigation
+  4. No horizontal scrollbar on any slide
+  5. CSS custom properties (variables) for all colors and key measurements
+  6. Logical, commented code sections clearly labelled per slide
+  7. Progress dots at bottom: one dot per slide, active dot highlighted in accent color
+  8. The very first slide must begin playing/animating immediately on page load
+  9. On the LAST slide, show a restart/replay indicator
+
+══════════════════════════════════════════════
+NARRATION CSV OUTPUT (CRITICAL)
+══════════════════════════════════════════════
+
+After the closing </html> tag, append a CSV block in this EXACT format:
+
+<!-- NARRATION_CSV_START
+slide_number,slide_title,word_count,duration_seconds,narration_text
+1,"Slide Title Here",38,20,"Full narration text here, with any commas inside double quotes. Use double-double-quotes to escape quotes inside text."
+2,"Second Slide Title",55,27,"Narration for slide two..."
+...
+NARRATION_CSV_END -->
+
+Rules for the CSV:
+  - One row per slide
+  - All text fields double-quoted
+  - Internal commas and quotes properly escaped (double the quote character)
+  - Include word_count and duration_seconds columns so users can verify timing
+  - The narration_text column must match EXACTLY what is in the scripts[] array in the JS
+
+══════════════════════════════════════════════
+OUTPUT FORMAT — READ THIS BEFORE YOU TYPE A SINGLE CHARACTER
+══════════════════════════════════════════════
+
+YOUR ENTIRE RESPONSE = RAW HTML ONLY. Nothing before it. Nothing after it.
+
+CORRECT — your response starts with this exact sequence of characters:
+<!DOCTYPE html>
+
+WRONG — never begin with any of these:
+  × "Here is your HTML..."
+  × "Sure! Below is the presentation..."
+  × \`\`\`html  (no markdown fences, ever)
+  × Any sentence, word, space, or newline before <!DOCTYPE html>
+
+CORRECT — your response ends with the CSV comment block:
+<!-- NARRATION_CSV_START
+...rows...
+NARRATION_CSV_END -->
+
+WRONG — never end with:
+  × "I hope this helps!"
+  × Any text, note, or explanation after the CSV block
+  × Closing markdown fences \`\`\`
+
+The file must open and run perfectly when saved as .html. No setup required.`;
+
+  // ── BUILD CSV PREVIEW ─────────────────────────
+  const csvLines = ['slide_number,slide_title,word_count,duration_seconds,narration_text'];
+  const slideTitles = inferSlideTitles(source, slideCount);
+  slideTitles.forEach((title, i) => {
+    const estWords = Math.round(wordCount(source) / slideCount * 1.1);
+    const estDur   = Math.ceil(estWords / (parseFloat(speed) <= 0.92 ? 2.3 : 2.5)) + 3;
+    csvLines.push(`${i+1},"${title}",~${estWords},~${estDur}s,"[AI will generate narration for slide ${i+1} here]"`);
+  });
+  const csvPreview = csvLines.join('\n');
+
+  // ── STATS ──────────────────────────────────────
+  const totalWords   = wordCount(source);
+  const estTotalSecs = slideTitles.reduce((sum) => {
+    const w = Math.round(totalWords / slideCount * 1.1);
+    return sum + Math.ceil(w / 2.3) + 3;
+  }, 0);
+  const estMins = Math.floor(estTotalSecs / 60);
+  const estSecs = estTotalSecs % 60;
+
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-chip">Source words: <span>${totalWords}</span></div>
+    <div class="stat-chip">Slides: <span>${slideCount}</span></div>
+    <div class="stat-chip">Est. duration: <span>~${estMins}m ${estSecs}s</span></div>
+    <div class="stat-chip">Template: <span>${tpl.name}</span></div>
+    <div class="stat-chip">Tone: <span>${tone}</span></div>
+    <div class="stat-chip">TTS rate: <span>${speed}</span></div>
+    <div class="stat-chip">Prompt size: <span>~${wordCount(prompt)} words</span></div>
+  `;
+
+  lastPrompt = prompt;
+  lastCSV    = csvLines.join('\n');
+
+  document.getElementById('prompt-output').textContent = prompt;
+  document.getElementById('csv-output').textContent    = csvPreview;
+  document.getElementById('output-section').classList.add('visible');
+  document.getElementById('output-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── INFER SLIDE TITLES ─────────────────────────
+function inferSlideTitles(source, count) {
+  const lines    = source.split('\n').map(l => l.trim()).filter(Boolean);
+  const headings = lines.filter(l =>
+    l.length < 80 && (l === l.toUpperCase() || /^[#*_]/.test(l) || /^\d+\./.test(l) || l.endsWith(':'))
+  ).slice(0, count);
+
+  const defaults = ['Introduction','Key Message','Context & Background','The Core Contrast','Deeper Insight','Three Pillars','Closing Thought','Call to Action','Summary'];
+  const titles   = [];
+  for (let i = 0; i < count; i++) {
+    const raw = headings[i] || defaults[i] || `Slide ${i+1}`;
+    titles.push(raw.replace(/^[#*_\d.:\s]+/, '').replace(/[:*_#]$/, '').trim() || `Slide ${i+1}`);
+  }
+  return titles;
+}
+
+// ── ROBUST COPY UTILITY ───────────────────────
+function copyToClipboard(text, btnId, originalLabel) {
+  const btn = document.getElementById(btnId);
+
+  function markCopied() {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = originalLabel; btn.classList.remove('copied'); }, 2500);
+  }
+
+  function fallbackCopy() {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      const ok = document.execCommand('copy');
+      if (ok) { markCopied(); }
+      else { btn.textContent = '⚠ Copy failed'; setTimeout(() => { btn.textContent = originalLabel; }, 2500); }
+    } catch(e) {
+      btn.textContent = '⚠ Copy failed';
+      setTimeout(() => { btn.textContent = originalLabel; }, 2500);
+    }
+    document.body.removeChild(ta);
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(markCopied).catch(fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
+}
+
+// ── COPY & DOWNLOAD ───────────────────────────
+function copyPrompt() {
+  if (!lastPrompt) return;
+  copyToClipboard(lastPrompt, 'copy-prompt', 'Copy Prompt');
+}
+function copyCSV() {
+  if (!lastCSV) return;
+  copyToClipboard(lastCSV, 'copy-csv', 'Copy CSV');
+}
+function downloadCSV() {
+  if (!lastCSV) return;
+  const blob = new Blob([lastCSV], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'slide-narrations.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+function copyWithSystem() {
+  if (!lastPrompt) return;
+  const systemPrefix =
+`[SYSTEM INSTRUCTION — READ BEFORE RESPONDING]
+You must output RAW HTML ONLY. Your response must begin with the exact characters <!DOCTYPE html> and nothing else before it. No preamble, no explanation, no markdown code fences (no \`\`\`html). Your response must end with the CSV comment block and nothing after it. Any text before <!DOCTYPE html> or after the CSV block will break the output.
+
+[USER PROMPT]
+`;
+  copyToClipboard(systemPrefix + lastPrompt, 'copy-prompt-sys', '+ System Msg');
+}
+
+// ── AI OUTPUT CLEANER ─────────────────────────
+let lastCleaned = '';
+function cleanAIOutput() {
+  const raw = document.getElementById('cleaner-input').value;
+  if (!raw.trim()) { alert('Paste AI output into the cleaner box first.'); return; }
+
+  const resultDiv  = document.getElementById('cleaner-result');
+  const statusEl   = document.getElementById('cleaner-status');
+  const outputEl   = document.getElementById('cleaner-output');
+  const copyBtn    = document.getElementById('copy-cleaned');
+  const dlBtn      = document.getElementById('dl-cleaned');
+
+  const doctypeIdx = raw.search(/<!doctype\s+html/i);
+  if (doctypeIdx === -1) {
+    statusEl.innerHTML = '<span style="color:var(--red)">⚠ Could not find &lt;!DOCTYPE html&gt; in the pasted text. Make sure you pasted the full AI response.</span>';
+    outputEl.textContent = '';
+    resultDiv.style.display = 'block';
+    copyBtn.style.display = 'none';
+    dlBtn.style.display = 'none';
+    return;
+  }
+
+  let cleaned = raw.slice(doctypeIdx);
+  cleaned = cleaned.replace(/```\s*$/gm, '').trimEnd();
+
+  const hasClose     = /<\/html>/i.test(cleaned);
+  const stripped     = doctypeIdx > 0;
+  const fencesRemoved= raw.includes('```');
+
+  const msgs = [];
+  if (stripped)      msgs.push(`<span style="color:var(--accent3)">✓ Stripped ${doctypeIdx} characters of preamble</span>`);
+  if (fencesRemoved) msgs.push(`<span style="color:var(--accent3)">✓ Removed markdown code fences</span>`);
+  if (!hasClose)     msgs.push(`<span style="color:var(--gold)">⚠ Warning: &lt;/html&gt; not found — the AI output may be truncated</span>`);
+  if (!stripped && !fencesRemoved) msgs.push(`<span style="color:var(--accent3)">✓ Output looks clean already</span>`);
+
+  statusEl.innerHTML = msgs.join(' &nbsp;·&nbsp; ');
+  outputEl.textContent = cleaned.slice(0, 800) + (cleaned.length > 800 ? '\n\n… [truncated preview — use Copy or Save buttons for full content]' : '');
+  lastCleaned = cleaned;
+  resultDiv.style.display = 'block';
+  copyBtn.style.display = 'inline-block';
+  dlBtn.style.display = 'inline-block';
+}
+function copyCleaned() {
+  if (!lastCleaned) return;
+  copyToClipboard(lastCleaned, 'copy-cleaned', 'Copy Clean HTML');
+}
+function downloadCleaned() {
+  if (!lastCleaned) return;
+  const blob = new Blob([lastCleaned], { type: 'text/html;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'slide-deck.html'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── INIT ──────────────────────────────────────
+renderGallery('all');
+</script>
+</body>
+</html>
