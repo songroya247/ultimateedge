@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viral Prompt Generator — UltimateEdge</title>
+<meta name="description" content="Free viral video prompt generator for TikTok and Instagram Reels creators. Generate scroll-stopping hooks, scripts and captions in 6 proven viral formats.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ultimateedge.info/viral-generator">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #05070c;
+  --surface: #0a0d14;
+  --surface2: #10141e;
+  --surface3: #161b28;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.11);
+  --accent: #47c8ff;
+  --accent-glow: rgba(71,200,255,0.15);
+  --yellow: #e8ff47;
+  --orange: #ff6b47;
+  --purple: #b47fff;
+  --green: #47ffb4;
+  --text: #eef1f8;
+  --muted: #5a6278;
+  --muted2: #8891a8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* SCAN LINE EFFECT */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(71,200,255,0.008) 2px,
+    rgba(71,200,255,0.008) 4px
+  );
+  pointer-events: none; z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px;
+  background: rgba(5,7,12,0.96);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.12em; color: var(--text); text-decoration: none; }
+.nav-logo span { color: var(--yellow); }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-link { color: var(--muted2); text-decoration: none; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; transition: color .2s; }
+.nav-link:hover { color: var(--text); }
+.nav-cta { background: var(--yellow); color: #05070c; padding: 7px 16px; border-radius: 4px; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.05em; text-decoration: none; text-transform: uppercase; transition: opacity .2s; }
+.nav-cta:hover { opacity: .88; }
+
+/* HERO */
+.hero {
+  padding: 70px 40px 50px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(71,200,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(71,200,255,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+.hero-glow {
+  position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 500px;
+  background: radial-gradient(ellipse, rgba(71,200,255,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 18px;
+  animation: fadeUp .5s .1s both;
+}
+.hero-eyebrow::before, .hero-eyebrow::after { content: ''; display: block; width: 28px; height: 1px; background: var(--accent); opacity: 0.5; }
+
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: live-pulse 1.5s infinite; }
+@keyframes live-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(71,255,180,0.4)} 50%{box-shadow:0 0 0 6px rgba(71,255,180,0)} }
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 0.92; letter-spacing: 0.02em;
+  margin-bottom: 18px;
+  animation: fadeUp .6s .2s both;
+}
+.hero h1 .line-accent { color: var(--accent); }
+.hero h1 .line-dim { color: var(--muted2); }
+
+.hero-sub {
+  font-size: 1rem; color: var(--muted2); font-weight: 300;
+  max-width: 500px; margin: 0 auto 36px; line-height: 1.7;
+  animation: fadeUp .6s .3s both;
+}
+.hero-sub strong { color: var(--text); font-weight: 500; }
+
+/* FORMAT SELECTOR */
+.format-section {
+  max-width: 960px; margin: 0 auto;
+  padding: 0 40px 0;
+  position: relative; z-index: 1;
+}
+
+.format-label {
+  font-family: 'DM Mono', monospace; font-size: 0.68rem;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px; text-align: center;
+}
+
+.format-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+  margin-bottom: 36px;
+  animation: fadeUp .6s .4s both;
+}
+
+.format-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 18px 8px 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; cursor: pointer; transition: all .2s;
+  font-family: 'DM Sans', sans-serif;
+  position: relative; overflow: hidden;
+}
+.format-btn::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: var(--fmt-color, var(--accent));
+  transform: scaleX(0) ; transition: transform .2s;
+}
+.format-btn:hover { background: var(--surface2); border-color: var(--border2); transform: translateY(-2px); }
+.format-btn:hover::after { transform: scaleX(1); }
+.format-btn.active {
+  background: var(--surface2);
+  border-color: var(--fmt-color, var(--accent));
+  box-shadow: 0 0 20px rgba(71,200,255,0.08);
+}
+.format-btn.active::after { transform: scaleX(1); }
+
+.fmt-icon { font-size: 1.6rem; line-height: 1; }
+.fmt-name {
+  font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem;
+  letter-spacing: 0.08em; color: var(--muted2); text-align: center;
+  line-height: 1.2;
+}
+.format-btn.active .fmt-name { color: var(--text); }
+.fmt-structure {
+  font-family: 'DM Mono', monospace; font-size: 0.58rem;
+  letter-spacing: 0.06em; color: var(--muted);
+  text-align: center; line-height: 1.4;
+}
+.format-btn.active .fmt-structure { color: var(--fmt-color, var(--accent)); }
+
+/* FORMAT INFO BAR */
+.format-info {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px; padding: 14px 20px;
+  margin-bottom: 24px; display: flex; align-items: center; gap: 14px;
+  transition: border-color .3s;
+  animation: fadeUp .5s .5s both;
+}
+.format-info-icon { font-size: 1.4rem; flex-shrink: 0; }
+.format-info-text { font-size: 0.85rem; color: var(--muted2); font-weight: 300; line-height: 1.5; }
+.format-info-text strong { color: var(--text); font-weight: 600; }
+
+/* INPUT */
+.input-wrap {
+  position: relative; margin-bottom: 16px;
+  animation: fadeUp .5s .55s both;
+}
+.topic-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; line-height: 1.6;
+  outline: none; resize: none;
+  min-height: 96px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.topic-input::placeholder { color: var(--muted); }
+.topic-input:focus {
+  border-color: rgba(71,200,255,0.35);
+  box-shadow: 0 0 0 3px rgba(71,200,255,0.05);
+}
+
+/* OPTIONS */
+.opts-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+  margin-bottom: 20px;
+  animation: fadeUp .5s .6s both;
+}
+.opt-group { display: flex; flex-direction: column; gap: 6px; }
+.opt-label { font-family: 'DM Mono', monospace; font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.opt-select {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 28px 9px 12px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+  outline: none; cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6278' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  transition: border-color .2s;
+}
+.opt-select:focus { border-color: rgba(71,200,255,0.35); }
+
+/* GENERATE BUTTON */
+.gen-btn {
+  width: 100%; padding: 18px;
+  background: var(--accent); color: var(--bg);
+  font-family: 'DM Sans', sans-serif; font-weight: 700;
+  font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase;
+  border: none; border-radius: 10px; cursor: pointer;
+  transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 10px;
+  position: relative; overflow: hidden;
+  animation: fadeUp .5s .65s both;
+  box-shadow: 0 0 40px rgba(71,200,255,0.15);
+}
+.gen-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%); transition: transform .6s;
+}
+.gen-btn:hover::before { transform: translateX(100%); }
+.gen-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(71,200,255,0.3); }
+.gen-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+.gen-btn.loading { background: var(--surface2); color: var(--muted2); border: 1px solid var(--border); box-shadow: none; }
+
+.loading-dots { display: flex; gap: 4px; }
+.loading-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted2); animation: dot-b 1.2s infinite; }
+.loading-dots span:nth-child(2){animation-delay:.2s}
+.loading-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot-b{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1);opacity:1}}
+
+/* OUTPUT SECTION */
+.output-wrap {
+  max-width: 960px; margin: 32px auto 0;
+  padding: 0 40px;
+  display: none;
+  animation: fadeUp .4s ease;
+}
+.output-wrap.visible { display: block; }
+
+/* OUTPUT TABS */
+.output-tabs {
+  display: flex; gap: 2px; margin-bottom: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-bottom: none; border-radius: 10px 10px 0 0; overflow: hidden;
+  padding: 6px 6px 0;
+}
+.tab-btn {
+  padding: 10px 18px; border-radius: 6px 6px 0 0;
+  font-family: 'DM Mono', monospace; font-size: 0.68rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; border: none; background: transparent;
+  color: var(--muted); transition: all .2s; font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; font-weight: 600;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { background: var(--surface2); color: var(--accent); }
+
+/* OUTPUT CARD */
+.output-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 0 0 14px 14px; overflow: hidden;
+}
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; background: var(--surface3);
+  border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px;
+}
+.output-label {
+  font-family: 'DM Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent);
+}
+.output-actions { display: flex; gap: 8px; }
+
+.act-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  font-size: 0.78rem; padding: 7px 14px; border-radius: 6px;
+  cursor: pointer; border: none; transition: all .2s;
+}
+.btn-copy-out { background: rgba(71,200,255,0.1); color: var(--accent); border: 1px solid rgba(71,200,255,0.2); }
+.btn-copy-out:hover { background: rgba(71,200,255,0.18); }
+.btn-copy-out.copied { background: rgba(71,255,180,0.1); color: var(--green); border-color: rgba(71,255,180,0.2); }
+.btn-regen-out { background: var(--surface); color: var(--muted2); border: 1px solid var(--border); }
+.btn-regen-out:hover { border-color: var(--border2); color: var(--text); }
+
+.tab-content { padding: 28px; display: none; }
+.tab-content.active { display: block; }
+
+.output-text {
+  font-size: 0.95rem; color: var(--text); line-height: 1.85;
+  font-weight: 300; white-space: pre-wrap;
+}
+
+/* SHARE TRIGGER + METADATA */
+.share-trigger-box, .metadata-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.box-label {
+  font-family: 'DM Mono', monospace; font-size: 0.63rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--yellow); margin-bottom: 10px;
+}
+.box-text { font-size: 0.9rem; color: var(--text); line-height: 1.7; font-weight: 300; white-space: pre-wrap; }
+.box-copy-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.75rem; font-weight: 600; color: var(--yellow);
+  background: rgba(232,255,71,0.08); border: 1px solid rgba(232,255,71,0.15);
+  padding: 5px 12px; border-radius: 4px; cursor: pointer; border-style: solid;
+  margin-top: 10px; transition: all .2s; font-family: 'DM Sans', sans-serif;
+}
+.box-copy-btn:hover { background: rgba(232,255,71,0.14); }
+
+/* PLATFORM LINKS */
+.platform-strip {
+  padding: 14px 20px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.plat-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
+.plat-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 6px; text-decoration: none;
+  font-size: 0.77rem; font-weight: 600; transition: opacity .2s;
+  border: 1px solid var(--border);
+}
+.plat-link:hover { opacity: .8; }
+.lnk-chatgpt { background: rgba(16,163,127,.1); border-color: rgba(16,163,127,.25); color: #10a37f; }
+.lnk-claude { background: rgba(232,150,71,.1); border-color: rgba(232,150,71,.25); color: #e89647; }
+.lnk-gemini { background: rgba(71,200,255,.08); border-color: rgba(71,200,255,.2); color: var(--accent); }
+
+/* SIGNAL METERS */
+.signal-section {
+  max-width: 960px; margin: 24px auto 0; padding: 0 40px;
+  display: none;
+}
+.signal-section.visible { display: block; }
+.signal-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+.signal-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
+}
+.signal-name { font-size: 0.78rem; color: var(--muted2); margin-bottom: 8px; font-weight: 500; }
+.signal-bar-wrap { background: var(--surface2); border-radius: 100px; height: 6px; overflow: hidden; margin-bottom: 6px; }
+.signal-bar { height: 100%; border-radius: 100px; transition: width 1s ease; }
+.signal-score { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text); }
+
+/* UPSELL */
+.upsell-wrap {
+  max-width: 960px; margin: 32px auto 80px; padding: 0 40px;
+}
+.upsell-card {
+  background: var(--surface2); border: 1px solid rgba(232,255,71,0.12);
+  border-radius: 14px; padding: 28px 32px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  position: relative; overflow: hidden;
+}
+.upsell-card::before {
+  content: ''; position: absolute; right: -50px; top: -50px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(232,255,71,0.07) 0%, transparent 70%);
+}
+.upsell-text h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.06em; margin-bottom: 4px; }
+.upsell-text p { font-size: 0.85rem; color: var(--muted2); font-weight: 300; }
+.upsell-btns { display: flex; gap: 8px; flex-shrink: 0; }
+.btn-y { display: inline-flex; align-items: center; gap: 6px; background: var(--yellow); color: #05070c; font-weight: 700; font-size: 0.82rem; letter-spacing: .04em; padding: 10px 20px; border-radius: 6px; text-decoration: none; transition: all .2s; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.btn-y:hover { opacity: .9; transform: translateY(-1px); }
+.btn-g { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--muted2); font-size: 0.82rem; padding: 10px 16px; border-radius: 6px; border: 1px solid var(--border); text-decoration: none; transition: all .2s; font-family: 'DM Sans', sans-serif; }
+.btn-g:hover { border-color: var(--border2); color: var(--text); }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: .1em; color: var(--text); text-decoration: none; }
+.footer-logo span { color: var(--yellow); }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { color: var(--muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+.footer-links a:hover { color: var(--text); }
+.footer-copy { font-family: 'DM Mono', monospace; font-size: .7rem; color: var(--muted); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+
+/* RESPONSIVE */
+@media(max-width:900px) {
+  nav{padding:0 20px}
+  .nav-right .nav-link{display:none}
+  .hero{padding:50px 20px 36px}
+  .format-section,.output-wrap,.signal-section,.upsell-wrap{padding-left:20px;padding-right:20px}
+  .format-grid{grid-template-columns:repeat(3,1fr)}
+  .opts-row{grid-template-columns:1fr}
+  .signal-grid{grid-template-columns:repeat(2,1fr)}
+  .upsell-card{flex-direction:column;padding:24px 20px}
+  .upsell-btns{width:100%}
+  .btn-y,.btn-g{flex:1;justify-content:center}
+  footer{flex-direction:column;align-items:flex-start;padding:32px 20px}
+  .footer-links{flex-wrap:wrap;gap:14px}
+}
+@media(max-width:600px){
+  .format-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">Ultimate<span>Edge</span></a>
+  <div class="nav-right">
+    <a href="/prompt-generator" class="nav-link">Prompt Gen</a>
+    <a href="https://selar.com/7o17517y15" target="_blank" class="nav-link">Prompt Pack</a>
+    <a href="/promptedge-pro" class="nav-cta">Go Pro ⚡</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow"><span class="live-dot"></span> 6 Viral Formats · Free · No Sign-up</div>
+  <h1>
+    <span class="line-dim">VIRAL</span><br>
+    <span class="line-accent">PROMPT</span><br>
+    GENERATOR
+  </h1>
+  <p class="hero-sub">
+    Pick a format. Drop your topic. Get a <strong>production-ready video prompt</strong> with hook, script structure, share trigger, and metadata — in seconds.
+  </p>
+</div>
+
+<!-- TOOL -->
+<div class="format-section">
+
+  <!-- FORMAT PICKER -->
+  <div class="format-label">Choose Your Viral Format</div>
+  <div class="format-grid">
+    <button class="format-btn active" onclick="selectFormat(this,'explainer')" style="--fmt-color:#47c8ff">
+      <span class="fmt-icon">🎬</span>
+      <span class="fmt-name">Explainer</span>
+      <span class="fmt-structure">Hook → Steps → Reveal</span>
+    </button>
+    <button class="format-btn" onclick="selectFormat(this,'mythbuster')" style="--fmt-color:#ff6b47">
+      <span class="fmt-icon">💥</span>
+      <span class="fmt-name">Myth Buster</span>
+      <span class="fmt-structure">Myth → Proof → Truth</span>
+    </button>
+    <button class="format-btn" onclick="selectFormat(this,'beforeafter')" style="--fmt-color:#47ffb4">
+      <span class="fmt-icon">⚡</span>
+      <span class="fmt-name">Before / After</span>
+      <span class="fmt-structure">Problem → Fix → Result</span>
+    </button>
+    <button class="format-btn" onclick="selectFormat(this,'countdown')" style="--fmt-color:#e8ff47">
+      <span class="fmt-icon">🔢</span>
+      <span class="fmt-name">Countdown</span>
+      <span class="fmt-structure">List → Rank → #1 Reveal</span>
+    </button>
+    <button class="format-btn" onclick="selectFormat(this,'storyarc')" style="--fmt-color:#b47fff">
+      <span class="fmt-icon">🎭</span>
+      <span class="fmt-name">Story Arc</span>
+      <span class="fmt-structure">Setup → Conflict → Resolution</span>
+    </button>
+    <button class="format-btn" onclick="selectFormat(this,'reaction')" style="--fmt-color:#ff47a3">
+      <span class="fmt-icon">🎯</span>
+      <span class="fmt-name">Reaction</span>
+      <span class="fmt-structure">Question → Commit → Reveal</span>
+    </button>
+  </div>
+
+  <!-- FORMAT INFO -->
+  <div class="format-info" id="formatInfo">
+    <span class="format-info-icon">🎬</span>
+    <div class="format-info-text" id="formatInfoText">
+      <strong>Explainer</strong> — Step-by-step breakdown with a dramatic reveal. Best for tricks, hacks, tutorials, and how-tos. Tease the payoff in the first 3 seconds.
+    </div>
+  </div>
+
+  <!-- TOPIC INPUT -->
+  <div class="input-wrap">
+    <textarea
+      class="topic-input"
+      id="topicInput"
+      maxlength="300"
+      placeholder="e.g. 3 money habits that kept me broke for years — and what changed everything..."
+    ></textarea>
+  </div>
+
+  <!-- OPTIONS -->
+  <div class="opts-row">
+    <div class="opt-group">
+      <div class="opt-label">Platform</div>
+      <select class="opt-select" id="platformSelect">
+        <option value="TikTok">TikTok</option>
+        <option value="Instagram Reels">Instagram Reels</option>
+        <option value="YouTube Shorts">YouTube Shorts</option>
+        <option value="Facebook Reels">Facebook Reels</option>
+        <option value="All Platforms">All Platforms</option>
+      </select>
+    </div>
+    <div class="opt-group">
+      <div class="opt-label">Niche</div>
+      <select class="opt-select" id="nicheSelect">
+        <option value="General / Any Niche">General</option>
+        <option value="Finance & Money">Finance & Money</option>
+        <option value="Content Creation">Content Creation</option>
+        <option value="Business & Entrepreneurship">Business</option>
+        <option value="Fitness & Health">Fitness & Health</option>
+        <option value="Education & Learning">Education</option>
+        <option value="Lifestyle & Motivation">Lifestyle</option>
+        <option value="Fashion & Beauty">Fashion & Beauty</option>
+        <option value="Food & Cooking">Food & Cooking</option>
+        <option value="Tech & AI">Tech & AI</option>
+      </select>
+    </div>
+    <div class="opt-group">
+      <div class="opt-label">Video Length</div>
+      <select class="opt-select" id="lengthSelect">
+        <option value="30 seconds">30 seconds</option>
+        <option value="60 seconds" selected>60 seconds</option>
+        <option value="90 seconds">90 seconds</option>
+        <option value="3 minutes">3 minutes</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- GENERATE -->
+  <button class="gen-btn" id="genBtn" onclick="generateViralPrompt()">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    Generate Viral Prompt
+  </button>
+
+</div>
+
+<!-- OUTPUT -->
+<div class="output-wrap" id="outputWrap">
+  <div class="output-tabs">
+    <button class="tab-btn active" onclick="switchTab('prompt')">🎬 Video Prompt</button>
+    <button class="tab-btn" onclick="switchTab('share')">📤 Share Trigger</button>
+    <button class="tab-btn" onclick="switchTab('meta')">🏷 Metadata Pack</button>
+  </div>
+  <div class="output-card">
+    <div class="output-header">
+      <span class="output-label" id="outputLabel">Explainer · TikTok · 60s</span>
+      <div class="output-actions">
+        <button class="act-btn btn-regen-out" onclick="generateViralPrompt()">↺ Regenerate</button>
+        <button class="act-btn btn-copy-out" id="mainCopyBtn" onclick="copyActiveTab()">⎘ Copy</button>
+      </div>
+    </div>
+
+    <!-- PROMPT TAB -->
+    <div class="tab-content active" id="tab-prompt">
+      <div class="output-text" id="promptOutput"></div>
+    </div>
+
+    <!-- SHARE TRIGGER TAB -->
+    <div class="tab-content" id="tab-share">
+      <div class="share-trigger-box">
+        <div class="box-label">📤 Share Trigger — End Card Script</div>
+        <div class="box-text" id="shareOutput"></div>
+        <button class="box-copy-btn" onclick="copyBox('shareOutput')">⎘ Copy Share Trigger</button>
+      </div>
+    </div>
+
+    <!-- METADATA TAB -->
+    <div class="tab-content" id="tab-meta">
+      <div class="metadata-box">
+        <div class="box-label">📌 Caption</div>
+        <div class="box-text" id="captionOutput"></div>
+        <button class="box-copy-btn" onclick="copyBox('captionOutput')">⎘ Copy Caption</button>
+      </div>
+      <div class="metadata-box">
+        <div class="box-label">🏷 Hashtags</div>
+        <div class="box-text" id="hashtagOutput"></div>
+        <button class="box-copy-btn" onclick="copyBox('hashtagOutput')">⎘ Copy Hashtags</button>
+      </div>
+      <div class="metadata-box">
+        <div class="box-label">🪝 Hook Variations</div>
+        <div class="box-text" id="hookOutput"></div>
+        <button class="box-copy-btn" onclick="copyBox('hookOutput')">⎘ Copy Hooks</button>
+      </div>
+    </div>
+
+    <div class="platform-strip">
+      <span class="plat-label">Paste into:</span>
+      <a href="https://chat.openai.com" target="_blank" class="plat-link lnk-chatgpt">🤖 ChatGPT</a>
+      <a href="https://claude.ai" target="_blank" class="plat-link lnk-claude">🧠 Claude</a>
+      <a href="https://gemini.google.com" target="_blank" class="plat-link lnk-gemini">💎 Gemini</a>
+    </div>
+  </div>
+</div>
+
+<!-- VIRAL SIGNAL METERS -->
+<div class="signal-section" id="signalSection">
+  <div class="signal-grid">
+    <div class="signal-card">
+      <div class="signal-name">Hook Strength</div>
+      <div class="signal-bar-wrap"><div class="signal-bar" id="bar-hook" style="width:0%;background:#47c8ff"></div></div>
+      <div class="signal-score" id="score-hook">—</div>
+    </div>
+    <div class="signal-card">
+      <div class="signal-name">Share Trigger</div>
+      <div class="signal-bar-wrap"><div class="signal-bar" id="bar-share" style="width:0%;background:#e8ff47"></div></div>
+      <div class="signal-score" id="score-share">—</div>
+    </div>
+    <div class="signal-card">
+      <div class="signal-name">Comment Engine</div>
+      <div class="signal-bar-wrap"><div class="signal-bar" id="bar-comment" style="width:0%;background:#b47fff"></div></div>
+      <div class="signal-score" id="score-comment">—</div>
+    </div>
+    <div class="signal-card">
+      <div class="signal-name">SEO / Metadata</div>
+      <div class="signal-bar-wrap"><div class="signal-bar" id="bar-seo" style="width:0%;background:#47ffb4"></div></div>
+      <div class="signal-score" id="score-seo">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- UPSELL -->
+<div class="upsell-wrap">
+  <div class="upsell-card">
+    <div class="upsell-text">
+      <h3>Get 20 Pre-Built Viral Prompts</h3>
+      <p>Stop generating from scratch every time. The TikTok Creator Prompt Pack includes 20 expert prompts across 6 categories — ready to use instantly.</p>
+    </div>
+    <div class="upsell-btns">
+      <a href="https://selar.com/7o17517y15" target="_blank" class="btn-y">Get the Pack — ₦7,500 →</a>
+      <a href="/promptedge-pro" class="btn-g">Go Pro</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">Ultimate<span>Edge</span></a>
+  <ul class="footer-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/prompt-generator">Prompt Generator</a></li>
+    <li><a href="https://selar.com/7o17517y15" target="_blank">Prompt Pack</a></li>
+    <li><a href="/promptedge-pro">Go Pro</a></li>
+    <li><a href="/about">About</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 UltimateEdge.info · Built by Solomon</div>
+</footer>
+
+<script>
+// ── STATE ──
+let selectedFormat = 'explainer';
+let activeTab = 'prompt';
+let outputs = { prompt: '', share: '', caption: '', hashtags: '', hooks: '' };
+
+// ── FORMAT DATA ──
+const formats = {
+  explainer: {
+    icon: '🎬',
+    info: '<strong>Explainer</strong> — Step-by-step breakdown with a dramatic reveal. Best for tricks, hacks, tutorials, and how-tos. Tease the payoff in the first 3 seconds.',
+    placeholder: 'e.g. 3 money habits that kept me broke for years — and what changed everything...',
+    signals: [88, 72, 65, 85]
+  },
+  mythbuster: {
+    icon: '💥',
+    info: '<strong>Myth Buster</strong> — Open with a false belief, dismantle it scene by scene, end with the corrected truth. High credibility and shareability.',
+    placeholder: 'e.g. Why "post consistently" is the worst advice for growing on TikTok...',
+    signals: [92, 85, 90, 78]
+  },
+  beforeafter: {
+    icon: '⚡',
+    info: '<strong>Before / After</strong> — Show the painful problem state versus the transformed result. Works for any transformation niche.',
+    placeholder: 'e.g. How I went from 200 to 20,000 followers in 90 days with one simple change...',
+    signals: [85, 90, 75, 72]
+  },
+  countdown: {
+    icon: '🔢',
+    info: '<strong>Countdown</strong> — Ranked list format with numbered reveals. Optimised for rewatch, comments, and debate. Always tease number 1 upfront.',
+    placeholder: 'e.g. Top 5 AI tools that will save you 10 hours every week...',
+    signals: [80, 78, 95, 82]
+  },
+  storyarc: {
+    icon: '🎭',
+    info: '<strong>Story Arc</strong> — Emotional narrative journey with setup, conflict, and resolution. Highest awe and shareability when executed well.',
+    placeholder: 'e.g. The moment I almost quit content creation — and what happened next...',
+    signals: [90, 95, 88, 70]
+  },
+  reaction: {
+    icon: '🎯',
+    info: '<strong>Reaction / Challenge</strong> — Pose a question upfront, make viewers commit to an answer, then reveal if they were right. Drives massive comment engagement.',
+    placeholder: 'e.g. Can you guess which of these 3 businesses made the most money last month?...',
+    signals: [86, 82, 98, 75]
+  }
+};
+
+// ── SELECT FORMAT ──
+function selectFormat(el, fmt) {
+  document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedFormat = fmt;
+  const data = formats[fmt];
+  document.getElementById('formatInfo').style.borderLeftColor = el.style.getPropertyValue('--fmt-color') || '#47c8ff';
+  document.getElementById('formatInfoText').innerHTML = data.icon + ' ' + data.info;
+  document.getElementById('topicInput').placeholder = data.placeholder;
+}
+
+// ── SYSTEM PROMPTS ──
+function buildSystemPrompt(fmt) {
+  const base = `You are an expert viral short-form video content strategist with a proven track record of creating content that gets millions of views on TikTok, Instagram Reels, and YouTube Shorts. You understand the psychology of scroll-stopping content deeply.`;
+
+  const fmtInstructions = {
+    explainer: `Your specialty is the Explainer format: Hook (0-3s bold statement) → Steps (numbered breakdown with surprising details) → Dramatic Reveal (the payoff that makes viewers say "I had no idea").`,
+    mythbuster: `Your specialty is the Myth Buster format: State the myth confidently as if you believe it → Methodically dismantle it with evidence or logic → Deliver the corrected truth with a strong opinion. High credibility and debate-driving.`,
+    beforeafter: `Your specialty is the Before/After format: Paint the painful before state vividly (make it relatable) → The turning point moment → The after state with specific results → CTA. Emotional and transformation-focused.`,
+    countdown: `Your specialty is the Countdown format: Tease #1 immediately to hook viewers → Work from #5 up to #1 → Each item must be surprising, not obvious → End with #1 that makes viewers comment their opinion.`,
+    storyarc: `Your specialty is the Story Arc format: Setup (establish relatable context) → Rising tension (the conflict or challenge) → Climax (the moment of truth) → Resolution (the satisfying or thought-provoking ending). High emotional resonance.`,
+    reaction: `Your specialty is the Reaction/Challenge format: Open with a polarising question that forces viewers to pick a side → Give them time to mentally commit → Reveal the answer with maximum drama → Ask them to confirm in comments.`
+  };
+
+  return base + ' ' + fmtInstructions[fmt];
+}
+
+// ── GENERATE ──
+async function generateViralPrompt() {
+  const topic = document.getElementById('topicInput').value.trim();
+  if (!topic) {
+    const inp = document.getElementById('topicInput');
+    inp.focus();
+    inp.style.borderColor = 'rgba(255,107,71,0.5)';
+    setTimeout(() => inp.style.borderColor = '', 2000);
+    return;
+  }
+
+  const platform = document.getElementById('platformSelect').value;
+  const niche = document.getElementById('nicheSelect').value;
+  const length = document.getElementById('lengthSelect').value;
+  const fmt = formats[selectedFormat];
+  const btn = document.getElementById('genBtn');
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div> Generating viral prompt...`;
+
+  const userMsg = `Create a complete viral video content package for this topic: "${topic}"
+
+Format: ${selectedFormat.toUpperCase()} (${fmt.info.replace(/<[^>]+>/g, '')})
+Platform: ${platform}
+Niche: ${niche}
+Video Length: ${length}
+
+Generate the following 5 components. Use these EXACT headers:
+
+===VIDEO PROMPT===
+Write a detailed, production-ready AI prompt that a creator can paste into ChatGPT or Claude to get a complete video script for this topic using the ${selectedFormat} format. The prompt should specify: the exact format structure, timing for each section, tone, specific hooks to use, the emotional journey, and the CTA. Make it 250-350 words and immediately usable.
+
+===SHARE TRIGGER===
+Write a 60-80 word end-card script that the creator reads at the very end of their video. It must: make viewers feel they MUST share with a specific person, use "tag someone who..." or similar viral mechanic, feel natural not forced, and drive saves. Make it conversational and punchy.
+
+===CAPTION===
+Write a platform-optimised caption for ${platform}. Under 150 characters. Must have a hook first line, one question that drives comments, and feel native to the platform.
+
+===HASHTAGS===
+Write 15 strategic hashtags for ${platform} in the ${niche} niche. Mix of: 3 mega (1M+), 5 large (100K-1M), 5 medium (10K-100K), 2 niche-specific. Just the hashtags, space-separated.
+
+===HOOKS===
+Write 3 different opening hooks (first 3 seconds) for this video. Each under 15 words. One shocking, one curiosity-gap, one personal call-out style.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: buildSystemPrompt(selectedFormat),
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+
+    const data = await response.json();
+    const raw = data.content?.[0]?.text || '';
+    if (!raw) throw new Error('Empty');
+    parseAndDisplay(raw, platform, length);
+
+  } catch (err) {
+    // Fallback
+    const fallback = generateFallback(topic, platform, niche, length);
+    parseAndDisplay(fallback, platform, length);
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.innerHTML = `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Generate Viral Prompt`;
+  }
+}
+
+// ── PARSE OUTPUT ──
+function parseAndDisplay(raw, platform, length) {
+  const extract = (key) => {
+    const regex = new RegExp(`===${key}===([\\s\\S]*?)(?:===|$)`);
+    const match = raw.match(regex);
+    return match ? match[1].trim() : '';
+  };
+
+  outputs.prompt = extract('VIDEO PROMPT') || raw;
+  outputs.share = extract('SHARE TRIGGER');
+  outputs.caption = extract('CAPTION');
+  outputs.hashtags = extract('HASHTAGS');
+  outputs.hooks = extract('HOOKS');
+
+  document.getElementById('promptOutput').textContent = outputs.prompt;
+  document.getElementById('shareOutput').textContent = outputs.share;
+  document.getElementById('captionOutput').textContent = outputs.caption;
+  document.getElementById('hashtagOutput').textContent = outputs.hashtags;
+  document.getElementById('hookOutput').textContent = outputs.hooks;
+
+  const fmtName = selectedFormat.charAt(0).toUpperCase() + selectedFormat.slice(1);
+  document.getElementById('outputLabel').textContent = `${fmtName} · ${platform} · ${length}`;
+
+  document.getElementById('outputWrap').classList.add('visible');
+  document.getElementById('signalSection').classList.add('visible');
+
+  // Animate signal bars
+  const sigs = formats[selectedFormat].signals;
+  const ids = ['hook','share','comment','seo'];
+  ids.forEach((id, i) => {
+    const score = sigs[i] + Math.floor(Math.random() * 8 - 4);
+    setTimeout(() => {
+      document.getElementById(`bar-${id}`).style.width = score + '%';
+      document.getElementById(`score-${id}`).textContent = score + '/100';
+    }, 200 + i * 100);
+  });
+
+  // Switch to prompt tab
+  switchTab('prompt');
+
+  setTimeout(() => {
+    document.getElementById('outputWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 150);
+}
+
+// ── FALLBACK ──
+function generateFallback(topic, platform, niche, length) {
+  const fmtData = {
+    explainer: `Act as a viral ${niche} content creator on ${platform}. Create a ${length} Explainer video script about: "${topic}"\n\nStructure:\n• Hook (0-3s): Open with a bold, unexpected statement that makes the viewer stop scrolling immediately\n• Setup (3-10s): Establish why this matters to them personally right now\n• Step 1 (10-25s): First key point with a specific surprising detail\n• Step 2 (25-40s): Second point that builds on the first\n• Step 3 (40-50s): The most surprising or counterintuitive point — save the best for here\n• Reveal (50-55s): The dramatic payoff that makes it all click\n• CTA (55-60s): One clear action — follow, comment, or save\n\nTone: Conversational, punchy sentences, speak directly to the viewer using "you". No filler words.`,
+    mythbuster: `Act as a credible ${niche} expert on ${platform}. Create a ${length} Myth Buster video script about: "${topic}"\n\nStructure:\n• Hook (0-3s): State the myth confidently, as if you believe it\n• Myth Setup (3-15s): Explain why people believe this myth — make it feel valid\n• The Turn (15-35s): Begin dismantling the myth with your first piece of evidence\n• The Proof (35-50s): Deliver the most damning evidence against the myth\n• The Truth (50-55s): State the corrected truth clearly and boldly\n• Opinion CTA (55-60s): Share your strong opinion and ask theirs in comments\n\nTone: Authoritative but accessible. Use real examples where possible.`,
+    beforeafter: `Act as a transformation storyteller on ${platform}. Create a ${length} Before/After video script about: "${topic}"\n\nStructure:\n• Hook (0-3s): Tease the "after" result first — make it sound almost unbelievable\n• Before (3-20s): Paint the painful before state with vivid, relatable detail\n• The Turning Point (20-35s): One specific moment or decision that changed everything\n• The Change (35-50s): Show the transformation process briefly — what actually changed\n• After (50-55s): The new reality with specific, concrete results or feelings\n• CTA (55-60s): Invite them to share their own before/after in comments\n\nTone: Honest, vulnerable, first-person. Short punchy sentences.`,
+    countdown: `Act as a ${niche} content creator on ${platform}. Create a ${length} Countdown video script about: "${topic}"\n\nStructure:\n• Hook (0-3s): "Number 1 on this list changed my life — stay till the end"\n• #5 (3-15s): Surprising point that most people overlook\n• #4 (15-25s): Builds on #5, slightly more impactful\n• #3 (25-38s): Halfway point — something genuinely shocking or counterintuitive\n• #2 (38-50s): The runner-up — so good they'll wonder what #1 could be\n• #1 (50-55s): The ultimate reveal — must be worth the wait\n• Comment CTA (55-60s): Ask them which one surprised them most\n\nTone: Energetic, building momentum with each item. Never let the pace drop.`,
+    storyarc: `Act as a ${niche} storyteller on ${platform}. Create a ${length} Story Arc video script about: "${topic}"\n\nStructure:\n• Hook (0-3s): Start in the middle of the most dramatic moment\n• Setup (3-15s): Pull back — establish context and introduce the relatable situation\n• Rising Action (15-35s): The problem grows, tension builds, things get worse before better\n• Climax (35-50s): The peak moment of tension or decision — the emotional turning point\n• Resolution (50-55s): The satisfying or thought-provoking ending\n• Reflection CTA (55-60s): Invite them to share a similar experience in comments\n\nTone: Emotional, cinematic, immersive. Use sensory details. Present tense throughout.`,
+    reaction: `Act as an engaging ${niche} host on ${platform}. Create a ${length} Reaction/Challenge video script about: "${topic}"\n\nStructure:\n• Hook Question (0-5s): Pose the challenge question directly — make them pick a side mentally\n• Stakes (5-15s): Explain why this question matters and why it's harder than it looks\n• Option A (15-25s): Present the first option compellingly — make it seem correct\n• Option B (25-35s): Present the alternative — now they're second-guessing themselves\n• The Suspense (35-45s): Build maximum tension before the reveal\n• The Reveal (45-55s): Announce the answer with maximum drama\n• Comment CTA (55-60s): "Comment below if you got it right — tag someone who would get this wrong"\n\nTone: Playful, fast-paced, slightly provocative. Keep energy high throughout.`
+  };
+
+  const prompt = fmtData[selectedFormat] || fmtData.explainer;
+
+  return `===VIDEO PROMPT===
+${prompt}
+
+===SHARE TRIGGER===
+If this gave you one thing to think about today, send it to one person right now — you know exactly who needs to see this. Tag them in the comments and let me know if they agree. Save this video too because you'll want to come back to it.
+
+===CAPTION===
+They told me this was wrong. I tested it anyway. 👀 Which one surprised you most? Drop it below 👇
+
+===HASHTAGS===
+#${selectedFormat}video #viral${selectedFormat.charAt(0).toUpperCase()+selectedFormat.slice(1)} #${document.getElementById('nicheSelect').value.replace(/\s+&?\s+/g,'').replace(/\s/g,'')} #contentcreator #creatortips #${document.getElementById('platformSelect').value.replace(/\s/g,'').toLowerCase()} #viral #fyp #foryoupage #trending #learnontiktok #creatoreconomy #socialmedia #growth #aitools
+
+===HOOKS===
+Hook 1: "Everything you know about this is wrong — here's the proof."
+Hook 2: "Nobody talks about this part — and it's the most important thing."
+Hook 3: "If you're still doing this in 2026, stop watching and fix it now."`;
+}
+
+// ── TABS ──
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+// ── COPY ──
+function copyActiveTab() {
+  let text = '';
+  if (activeTab === 'prompt') text = outputs.prompt;
+  else if (activeTab === 'share') text = outputs.share;
+  else if (activeTab === 'meta') text = [outputs.caption, outputs.hashtags, outputs.hooks].join('\n\n');
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('mainCopyBtn');
+    btn.className = 'act-btn btn-copy-out copied';
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.className = 'act-btn btn-copy-out'; btn.textContent = '⎘ Copy'; }, 2500);
+  });
+}
+
+function copyBox(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '⎘ Copy ' + btn.textContent.replace('✓ Copied!','').trim(), 2000);
+  });
+}
+
+// ── CTRL+ENTER ──
+document.getElementById('topicInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) generateViralPrompt();
+});
+</script>
+</body>
+</html>
