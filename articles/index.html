@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articles — UltimateEdge</title>
+<meta name="description" content="Free guides, tutorials and tips for content creators, traders and modern thinkers. AI tools, TikTok growth, forex strategies and more.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ultimateedge.info/articles">
+<meta property="og:title" content="Articles — UltimateEdge">
+<meta property="og:description" content="Free guides for content creators, traders and modern thinkers.">
+<meta property="og:url" content="https://ultimateedge.info/articles">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080a0f;
+  --surface: #0e1117;
+  --surface2: #151821;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #e8ff47;
+  --accent2: #47c8ff;
+  --text: #f0f2f7;
+  --muted: #6b7280;
+  --muted2: #8892a4;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.4;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px;
+  background: rgba(8,10,15,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.12em; color: var(--text); text-decoration: none; }
+.nav-logo span { color: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-link { color: var(--muted2); text-decoration: none; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; transition: color .2s; }
+.nav-link:hover { color: var(--text); }
+.nav-cta { background: var(--accent); color: #080a0f; padding: 7px 16px; border-radius: 4px; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.05em; text-decoration: none; text-transform: uppercase; transition: opacity .2s; }
+.nav-cta:hover { opacity: .88; }
+
+/* HERO */
+.hero {
+  padding: 80px 40px 60px;
+  max-width: 1100px; margin: 0 auto;
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -40px; right: 0;
+  width: 400px; height: 300px;
+  background: radial-gradient(ellipse, rgba(232,255,71,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-tag {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  animation: fadeUp 0.5s 0.1s both;
+}
+.hero-tag::before { content: ''; display: block; width: 24px; height: 1px; background: var(--accent); }
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  line-height: 0.92; letter-spacing: 0.02em; margin-bottom: 18px;
+  animation: fadeUp 0.6s 0.2s both;
+}
+h1 em { font-style: normal; color: var(--accent); }
+.hero-sub {
+  font-size: 1rem; color: var(--muted2); font-weight: 300;
+  max-width: 520px; line-height: 1.7; margin-bottom: 40px;
+  animation: fadeUp 0.6s 0.3s both;
+}
+.hero-sub strong { color: var(--text); font-weight: 500; }
+
+/* STATS ROW */
+.stats-row {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  padding: 24px 0; border-top: 1px solid var(--border);
+  animation: fadeUp 0.6s 0.4s both;
+}
+.stat { display: flex; align-items: center; gap: 10px; }
+.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--accent); letter-spacing: 0.05em; line-height: 1; }
+.stat-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* FILTER BAR */
+.filter-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 40px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+}
+.filter-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-pill {
+  padding: 7px 16px; border: 1px solid var(--border);
+  border-radius: 100px; font-size: 0.8rem; font-weight: 500;
+  cursor: pointer; color: var(--muted2); transition: all .2s;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+}
+.filter-pill:hover { border-color: var(--border2); color: var(--text); }
+.filter-pill.active { background: var(--accent); color: #080a0f; border-color: var(--accent); font-weight: 700; }
+
+.search-wrap { position: relative; }
+.search-input {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 36px 9px 14px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.87rem;
+  outline: none; width: 220px; transition: border-color .2s;
+}
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus { border-color: rgba(232,255,71,0.35); }
+.search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.9rem; pointer-events: none; }
+
+/* ARTICLES GRID */
+.articles-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 40px 100px;
+}
+
+/* FEATURED ARTICLE — spans full width */
+.article-featured {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; margin-bottom: 24px;
+  text-decoration: none; color: var(--text);
+  transition: border-color .25s, box-shadow .25s;
+}
+.article-featured:hover { border-color: rgba(232,255,71,0.25); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.featured-visual {
+  background: linear-gradient(135deg, #0e1117 0%, #151821 100%);
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px 40px; position: relative; overflow: hidden;
+  min-height: 280px;
+}
+.featured-visual::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(232,255,71,0.08) 0%, transparent 65%);
+}
+.featured-emoji { font-size: 5rem; position: relative; z-index: 1; }
+.featured-body { padding: 44px 40px; display: flex; flex-direction: column; justify-content: center; }
+.featured-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'DM Mono', monospace; font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  background: rgba(232,255,71,0.1); border: 1px solid rgba(232,255,71,0.2);
+  color: var(--accent); padding: 4px 10px; border-radius: 3px;
+  margin-bottom: 16px; width: fit-content;
+}
+.featured-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  letter-spacing: 0.04em; line-height: 1.05;
+  margin-bottom: 14px;
+}
+.featured-desc { font-size: 0.9rem; color: var(--muted2); font-weight: 300; line-height: 1.7; margin-bottom: 24px; }
+.featured-meta {
+  display: flex; align-items: center; gap: 16px;
+  font-family: 'DM Mono', monospace; font-size: 0.68rem;
+  letter-spacing: 0.08em; color: var(--muted); flex-wrap: wrap;
+}
+.meta-dot { color: var(--accent); }
+.read-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em;
+  color: var(--accent); text-transform: uppercase; margin-top: 20px;
+}
+.read-link svg { transition: transform .2s; }
+.article-featured:hover .read-link svg { transform: translateX(5px); }
+
+/* ARTICLES GRID */
+.articles-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* ARTICLE CARD */
+.article-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  text-decoration: none; color: var(--text);
+  display: flex; flex-direction: column;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+  position: relative;
+}
+.article-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--card-accent, var(--accent));
+  transform: scaleX(0); transition: transform .3s ease;
+}
+.article-card:hover { transform: translateY(-4px); border-color: var(--border2); box-shadow: 0 16px 48px rgba(0,0,0,0.3); }
+.article-card:hover::before { transform: scaleX(1); }
+
+.card-visual {
+  background: var(--surface2);
+  padding: 32px; display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; min-height: 120px; position: relative; overflow: hidden;
+}
+.card-visual::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, var(--card-glow, rgba(232,255,71,0.06)) 0%, transparent 70%);
+}
+.card-body { padding: 22px 22px 20px; flex: 1; display: flex; flex-direction: column; }
+.card-cat {
+  font-family: 'DM Mono', monospace; font-size: 0.62rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--card-accent, var(--accent)); margin-bottom: 10px;
+}
+.card-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+  letter-spacing: 0.05em; line-height: 1.1; margin-bottom: 10px;
+}
+.card-desc { font-size: 0.83rem; color: var(--muted2); font-weight: 300; line-height: 1.6; flex: 1; margin-bottom: 16px; }
+.card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 14px; border-top: 1px solid var(--border);
+  font-family: 'DM Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.08em; color: var(--muted);
+}
+.card-read-more {
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em;
+  color: var(--card-accent, var(--accent)); text-transform: uppercase;
+  display: flex; align-items: center; gap: 5px;
+}
+.card-read-more svg { transition: transform .2s; }
+.article-card:hover .card-read-more svg { transform: translateX(3px); }
+
+/* COMING SOON CARD */
+.article-card.coming-soon { opacity: 0.5; cursor: default; }
+.article-card.coming-soon:hover { transform: none; border-color: var(--border); box-shadow: none; }
+.article-card.coming-soon::before { display: none; }
+
+/* WRITE MORE CTA */
+.write-cta {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 28px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; margin-top: 24px; flex-wrap: wrap;
+}
+.write-cta-text h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.06em; margin-bottom: 4px; }
+.write-cta-text p { font-size: 0.84rem; color: var(--muted2); font-weight: 300; }
+.btn-sm {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: #080a0f;
+  font-weight: 700; font-size: 0.82rem; letter-spacing: 0.04em;
+  padding: 10px 20px; border-radius: 6px; text-decoration: none;
+  transition: all .2s; white-space: nowrap;
+}
+.btn-sm:hover { opacity: .9; transform: translateY(-1px); }
+
+/* NEWSLETTER */
+.newsletter {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 40px 100px;
+}
+.newsletter-card {
+  background: var(--surface2); border: 1px solid rgba(232,255,71,0.12);
+  border-radius: 16px; padding: 56px 52px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.newsletter-card::before {
+  content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+  width: 500px; height: 250px;
+  background: radial-gradient(ellipse, rgba(232,255,71,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.nl-tag { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; position: relative; }
+.nl-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem, 3vw, 2.8rem); letter-spacing: 0.04em; line-height: 1; margin-bottom: 12px; position: relative; }
+.nl-sub { font-size: 0.92rem; color: var(--muted2); font-weight: 300; max-width: 440px; margin: 0 auto 28px; line-height: 1.7; position: relative; }
+.nl-form { display: flex; gap: 10px; max-width: 460px; margin: 0 auto; position: relative; }
+.nl-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; padding: 13px 18px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color .2s; }
+.nl-input::placeholder { color: var(--muted); }
+.nl-input:focus { border-color: rgba(232,255,71,0.4); }
+.nl-btn { background: var(--accent); color: #080a0f; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 13px 22px; border: none; border-radius: 8px; cursor: pointer; white-space: nowrap; transition: all .2s; }
+.nl-btn:hover { opacity: .9; transform: translateY(-1px); }
+.nl-fine { margin-top: 12px; font-size: 0.74rem; color: var(--muted); font-family: 'DM Mono', monospace; position: relative; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-state h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; }
+.empty-state p { font-size: 0.88rem; color: var(--muted); }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: .1em; color: var(--text); text-decoration: none; }
+.footer-logo span { color: var(--accent); }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { color: var(--muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+.footer-links a:hover { color: var(--text); }
+.footer-copy { font-family: 'DM Mono', monospace; font-size: .7rem; color: var(--muted); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+.reveal { opacity:0; transform:translateY(24px); transition:opacity .6s ease,transform .6s ease; }
+.reveal.visible { opacity:1; transform:none; }
+.hidden { display: none !important; }
+
+/* RESPONSIVE */
+@media(max-width:900px) {
+  nav { padding: 0 20px; }
+  .nav-right .nav-link { display: none; }
+  .hero, .filter-wrap, .articles-wrap, .newsletter { padding-left: 20px; padding-right: 20px; }
+  h1 { font-size: clamp(2.8rem, 12vw, 4rem); }
+  .article-featured { grid-template-columns: 1fr; }
+  .featured-visual { min-height: 160px; }
+  .featured-body { padding: 28px 24px; }
+  .articles-grid { grid-template-columns: 1fr; }
+  .newsletter-card { padding: 40px 24px; }
+  .nl-form { flex-direction: column; }
+  .nl-btn { width: 100%; }
+  footer { flex-direction: column; align-items: flex-start; padding: 32px 20px; }
+  .footer-links { flex-wrap: wrap; gap: 14px; }
+  .write-cta { flex-direction: column; }
+}
+@media(min-width:600px) and (max-width:900px) {
+  .articles-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">Ultimate<span>Edge</span></a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/#tools" class="nav-link">Tools</a>
+    <a href="https://selar.com/7o17517y15" target="_blank" class="nav-link">Prompt Pack</a>
+    <a href="https://paystack.com/buy/promptedge-pro-ptqtgp" target="_blank" class="nav-cta">Go Pro ⚡</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Knowledge Base</div>
+  <h1>ARTICLES &<br><em>GUIDES</em></h1>
+  <p class="hero-sub">
+    <strong>Free tutorials, strategies and insights</strong> for content creators, traders, students and modern thinkers. Written to be practical — not just interesting.
+  </p>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num" id="articleCount">1</div><div class="stat-label">Articles Published</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Categories</div></div>
+    <div class="stat"><div class="stat-num">Free</div><div class="stat-label">Always</div></div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-wrap reveal">
+  <div class="filter-pills">
+    <button class="filter-pill active" onclick="filterArticles('all', this)">All</button>
+    <button class="filter-pill" onclick="filterArticles('ai-tools', this)">AI Tools</button>
+    <button class="filter-pill" onclick="filterArticles('content-strategy', this)">Content Strategy</button>
+    <button class="filter-pill" onclick="filterArticles('forex', this)">Forex & Trading</button>
+    <button class="filter-pill" onclick="filterArticles('education', this)">Education</button>
+    <button class="filter-pill" onclick="filterArticles('growth', this)">Growth</button>
+  </div>
+  <div class="search-wrap">
+    <input type="text" class="search-input" placeholder="Search articles..." oninput="searchArticles(this.value)">
+    <span class="search-icon">🔍</span>
+  </div>
+</div>
+
+<!-- ARTICLES -->
+<div class="articles-wrap">
+
+  <!-- FEATURED ARTICLE -->
+  <a href="/articles/best-free-ai-prompt-tools-tiktok-creators-2026"
+     class="article-featured reveal"
+     data-cat="ai-tools"
+     data-title="best free ai prompt tools tiktok creators 2026">
+    <div class="featured-visual">
+      <span class="featured-emoji">⚡</span>
+    </div>
+    <div class="featured-body">
+      <div class="featured-badge">⭐ Featured Article</div>
+      <div class="featured-title">Best Free AI Prompt Tools for TikTok Creators in 2026</div>
+      <p class="featured-desc">Stop staring at a blank screen. These free AI prompt tools help TikTok creators write viral hooks, scripts and captions in under 60 seconds — no experience required.</p>
+      <div class="featured-meta">
+        <span><span class="meta-dot">◆</span> AI Tools</span>
+        <span><span class="meta-dot">◆</span> March 30, 2026</span>
+        <span><span class="meta-dot">◆</span> 8 min read</span>
+      </div>
+      <div class="read-link">
+        Read Article
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <!-- ARTICLES GRID -->
+  <div class="articles-grid" id="articlesGrid">
+
+    <!-- Coming soon placeholders — replace with real articles as you write them -->
+    <div class="article-card coming-soon" data-cat="content-strategy" data-title="how to write viral hooks tiktok" style="--card-accent:#47c8ff;--card-glow:rgba(71,200,255,0.06)">
+      <div class="card-visual">🎣</div>
+      <div class="card-body">
+        <div class="card-cat">Content Strategy</div>
+        <div class="card-title">How to Write Viral Hooks for TikTok</div>
+        <p class="card-desc">The psychology behind scroll-stopping opening lines and how to write them every time.</p>
+        <div class="card-footer">
+          <span>Coming Soon</span>
+          <span class="card-read-more" style="color:var(--muted)">Soon</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-card coming-soon" data-cat="growth" data-title="free tools content creators 2026" style="--card-accent:#47ffb4;--card-glow:rgba(71,255,180,0.06)">
+      <div class="card-visual">🛠</div>
+      <div class="card-body">
+        <div class="card-cat">Growth</div>
+        <div class="card-title">Free Tools Every Content Creator Needs in 2026</div>
+        <p class="card-desc">The complete toolkit for creators who want to produce more content in less time.</p>
+        <div class="card-footer">
+          <span>Coming Soon</span>
+          <span class="card-read-more" style="color:var(--muted)">Soon</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-card coming-soon" data-cat="forex" data-title="forex risk management beginners" style="--card-accent:#ff6b47;--card-glow:rgba(255,107,71,0.06)">
+      <div class="card-visual">📈</div>
+      <div class="card-body">
+        <div class="card-cat">Forex & Trading</div>
+        <div class="card-title">Forex Risk Management for Beginners</div>
+        <p class="card-desc">Why most traders blow their accounts and the simple rules that protect yours.</p>
+        <div class="card-footer">
+          <span>Coming Soon</span>
+          <span class="card-read-more" style="color:var(--muted)">Soon</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-card coming-soon" data-cat="ai-tools" data-title="chatgpt vs claude vs gemini creators" style="--card-accent:#e8ff47;--card-glow:rgba(232,255,71,0.06)">
+      <div class="card-visual">🤖</div>
+      <div class="card-body">
+        <div class="card-cat">AI Tools</div>
+        <div class="card-title">ChatGPT vs Claude vs Gemini — Which Is Best for Creators?</div>
+        <p class="card-desc">An honest side-by-side comparison of the three biggest AI tools for content creation.</p>
+        <div class="card-footer">
+          <span>Coming Soon</span>
+          <span class="card-read-more" style="color:var(--muted)">Soon</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-card coming-soon" data-cat="education" data-title="study smarter ai tools students" style="--card-accent:#b47fff;--card-glow:rgba(180,127,255,0.06)">
+      <div class="card-visual">📚</div>
+      <div class="card-body">
+        <div class="card-cat">Education</div>
+        <div class="card-title">How to Study Smarter Using AI Tools</div>
+        <p class="card-desc">Use AI to create study guides, quiz yourself, and understand difficult topics faster.</p>
+        <div class="card-footer">
+          <span>Coming Soon</span>
+          <span class="card-read-more" style="color:var(--muted)">Soon</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-card coming-soon" data-cat="content-strategy" data-title="30 day content plan tiktok instagram" style="--card-accent:#ff47a3;--card-glow:rgba(255,71,163,0.06)">
+      <div class="card-visual">📅</div>
+      <div class="card-body">
+        <div class="card-cat">Content Strategy</div>
+        <div class="card-title">Your 30-Day Content Plan for TikTok & Instagram</div>
+        <p class="card-desc">A complete month-by-month framework for creators who want consistent growth.</p>
+        <div class="card-footer">
+          <span>Coming Soon</span>
+          <span class="card-read-more" style="color:var(--muted)">Soon</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- EMPTY SEARCH STATE -->
+  <div class="empty-state hidden" id="emptyState">
+    <h3>No Articles Found</h3>
+    <p>Try a different search term or category.</p>
+  </div>
+
+  <!-- WRITE CTA -->
+  <div class="write-cta reveal">
+    <div class="write-cta-text">
+      <h3>New articles every week</h3>
+      <p>Subscribe below to get each new guide delivered to your inbox before anyone else.</p>
+    </div>
+    <a href="/article-formatter" class="btn-sm">
+      Article Formatter Tool →
+    </a>
+  </div>
+
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter reveal">
+  <div class="newsletter-card">
+    <div class="nl-tag">Weekly Drops</div>
+    <h2 class="nl-title">Never Miss a New Article</h2>
+    <p class="nl-sub">Get every new guide, prompt pack drop, and tool update delivered to your inbox every Monday — free forever.</p>
+    <form class="nl-form" onsubmit="nlSubscribe(event)">
+      <input type="email" class="nl-input" id="nlEmail" placeholder="your@email.com" required>
+      <button type="submit" class="nl-btn" id="nlBtn">Subscribe →</button>
+    </form>
+    <p class="nl-fine" id="nlFine">No spam · Unsubscribe anytime</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">Ultimate<span>Edge</span></a>
+  <ul class="footer-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/#tools">Tools</a></li>
+    <li><a href="https://selar.com/7o17517y15" target="_blank">Prompt Pack</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/privacy-policy">Privacy</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 UltimateEdge.info · Built by Solomon</div>
+</footer>
+
+<script>
+// ── ARTICLES DATA ──
+// Add new articles here as you publish them
+// Just copy a block and update the values
+const ARTICLES = [
+  {
+    slug: '/articles/best-free-ai-prompt-tools-tiktok-creators-2026',
+    title: 'Best Free AI Prompt Tools for TikTok Creators in 2026',
+    desc: 'Stop staring at a blank screen. These free AI prompt tools help TikTok creators write viral hooks, scripts and captions in under 60 seconds.',
+    cat: 'ai-tools',
+    catLabel: 'AI Tools',
+    date: 'March 30, 2026',
+    readTime: '8',
+    emoji: '⚡',
+    color: '#e8ff47',
+    glow: 'rgba(232,255,71,0.06)',
+    featured: true,
+    live: true
+  }
+  // ADD NEW ARTICLES HERE:
+  // {
+  //   slug: '/articles/your-slug-here',
+  //   title: 'Your Article Title',
+  //   desc: 'Short description here.',
+  //   cat: 'ai-tools', // ai-tools, content-strategy, forex, education, growth
+  //   catLabel: 'AI Tools',
+  //   date: 'April 1, 2026',
+  //   readTime: '5',
+  //   emoji: '🎯',
+  //   color: '#47c8ff',
+  //   glow: 'rgba(71,200,255,0.06)',
+  //   featured: false,
+  //   live: true
+  // }
+];
+
+// Update article count
+document.getElementById('articleCount').textContent = ARTICLES.filter(a => a.live).length;
+
+// ── FILTER ──
+let activeFilter = 'all';
+let searchQuery = '';
+
+function filterArticles(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function searchArticles(q) {
+  searchQuery = q.toLowerCase();
+  applyFilters();
+}
+
+function applyFilters() {
+  // Featured article
+  const featured = document.querySelector('.article-featured');
+  const featData = { cat: featured.dataset.cat, title: featured.dataset.title };
+  const featMatch = (activeFilter === 'all' || featData.cat === activeFilter) &&
+                    (!searchQuery || featData.title.includes(searchQuery));
+  featured.classList.toggle('hidden', !featMatch);
+
+  // Grid cards
+  const cards = document.querySelectorAll('.articles-grid .article-card');
+  let visibleCount = featMatch ? 1 : 0;
+  cards.forEach(card => {
+    const catMatch = activeFilter === 'all' || card.dataset.cat === activeFilter;
+    const searchMatch = !searchQuery || card.dataset.title.includes(searchQuery);
+    const show = catMatch && searchMatch;
+    card.classList.toggle('hidden', !show);
+    if (show) visibleCount++;
+  });
+
+  document.getElementById('emptyState').classList.toggle('hidden', visibleCount > 0);
+}
+
+// ── NEWSLETTER ──
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQkK8YN7m0tnQrJ1ILkvlEyPoTI26J0cSjJRwugI7jmgTNvNfwhMpCWhsgA881idkadg/exec';
+
+async function nlSubscribe(e) {
+  e.preventDefault();
+  const email = document.getElementById('nlEmail').value;
+  const btn = document.getElementById('nlBtn');
+  btn.textContent = 'Subscribing...';
+  btn.disabled = true;
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      body: JSON.stringify({ email: email, name: 'Articles Subscriber' }),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    document.getElementById('nlEmail').value = '';
+    document.getElementById('nlFine').textContent = '✓ Subscribed! Welcome to UltimateEdge.';
+    document.getElementById('nlFine').style.color = '#47ffb4';
+    btn.textContent = '✓ Done';
+  } catch(err) {
+    btn.disabled = false;
+    btn.textContent = 'Subscribe →';
+  }
+}
+
+// ── ADD NEW LIVE ARTICLES TO GRID DYNAMICALLY ──
+// This function adds any live non-featured articles from the ARTICLES array to the grid
+// The coming soon cards are placeholders — they get replaced as you publish
+function renderLiveArticles() {
+  const liveNonFeatured = ARTICLES.filter(a => a.live && !a.featured);
+  if (!liveNonFeatured.length) return;
+  const grid = document.getElementById('articlesGrid');
+  liveNonFeatured.forEach(article => {
+    const card = document.createElement('a');
+    card.href = article.slug;
+    card.className = 'article-card reveal';
+    card.dataset.cat = article.cat;
+    card.dataset.title = article.title.toLowerCase();
+    card.style.cssText = `--card-accent:${article.color};--card-glow:${article.glow}`;
+    card.innerHTML = `
+      <div class="card-visual">${article.emoji}</div>
+      <div class="card-body">
+        <div class="card-cat">${article.catLabel}</div>
+        <div class="card-title">${article.title}</div>
+        <p class="card-desc">${article.desc}</p>
+        <div class="card-footer">
+          <span>${article.date} · ${article.readTime} min</span>
+          <span class="card-read-more">Read <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>`;
+    grid.insertBefore(card, grid.firstChild);
+  });
+}
+renderLiveArticles();
+
+// ── SCROLL REVEAL ──
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
