@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article Formatter — UltimateEdge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080a0f;--surface:#0e1117;--surface2:#151821;--border:rgba(255,255,255,0.07);--accent:#e8ff47;--accent2:#47c8ff;--text:#f0f2f7;--muted:#6b7280;--muted2:#8892a4;--error:#ff6b47;--success:#47ffb4}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(8,10,15,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.12em;color:var(--text);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-tag{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+
+/* LAYOUT */
+.app-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:calc(100vh - 64px)}
+.panel-left{padding:32px 40px;border-right:1px solid var(--border);overflow-y:auto;max-height:calc(100vh - 64px);position:sticky;top:64px}
+.panel-right{overflow-y:auto;background:var(--surface)}
+
+/* PANEL */
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.panel-label{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent)}
+.step-badge{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;background:rgba(232,255,71,0.08);border:1px solid rgba(232,255,71,0.15);color:var(--accent);padding:3px 10px;border-radius:3px}
+
+/* FIELDS */
+.field{margin-bottom:18px}
+.field-label{font-size:0.82rem;font-weight:600;letter-spacing:0.04em;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.field-label .required{color:var(--accent);font-size:0.75rem}
+.field-hint{font-size:0.74rem;color:var(--muted);margin-bottom:7px;font-weight:300;line-height:1.5}
+.field-hint code{color:var(--accent);font-family:'DM Mono',monospace;font-size:0.72rem;background:rgba(232,255,71,0.08);padding:1px 5px;border-radius:3px}
+input[type=text],input[type=url],textarea,select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 15px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;transition:border-color .2s,box-shadow .2s;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:rgba(232,255,71,0.4);box-shadow:0 0 0 3px rgba(232,255,71,0.05)}
+textarea{min-height:180px;line-height:1.6}
+textarea.tall{min-height:300px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:22px 0 16px}
+.divider-label{font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.divider-line{flex:1;height:1px;background:var(--border)}
+
+/* CATEGORY PILLS */
+.cat-pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.cat-pill{padding:5px 13px;border:1px solid var(--border);border-radius:100px;font-size:0.78rem;cursor:pointer;color:var(--muted2);transition:all .2s;user-select:none}
+.cat-pill:hover{border-color:var(--accent);color:var(--accent)}
+.cat-pill.active{background:var(--accent);color:#080a0f;border-color:var(--accent);font-weight:700}
+
+/* ACTIONS */
+.actions{display:flex;gap:9px;margin-top:24px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.86rem;letter-spacing:0.04em;padding:11px 20px;border-radius:6px;border:none;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-accent{background:var(--accent);color:#080a0f}
+.btn-accent:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(232,255,71,0.2)}
+.btn-outline{background:transparent;color:var(--muted2);border:1px solid var(--border)}
+.btn-outline:hover{border-color:rgba(255,255,255,0.2);color:var(--text)}
+.btn-blue{background:var(--accent2);color:#080a0f}
+.btn-blue:hover{opacity:.9;transform:translateY(-1px)}
+
+/* STATUS */
+.status-bar{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:0.71rem;letter-spacing:0.08em;color:var(--muted);margin-top:14px;padding:9px 13px;background:var(--surface2);border-radius:6px;border:1px solid var(--border)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0}
+.status-dot.ready{background:var(--success);animation:pulse-dot 2s infinite}
+.status-dot.error{background:var(--error)}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* INSTRUCTIONS */
+.instructions{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:8px;padding:14px 18px;margin-bottom:14px}
+.instructions-title{font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent2);margin-bottom:9px}
+.instructions ol{padding-left:16px;display:flex;flex-direction:column;gap:5px}
+.instructions li{font-size:0.82rem;color:var(--muted2)}
+.instructions li strong{color:var(--text)}
+
+/* ── AI PROMPT BUTTON ── */
+.ai-prompt-btn{width:100%;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(232,255,71,0.07) 0%,rgba(71,200,255,0.05) 100%);border:1px solid rgba(232,255,71,0.22);border-radius:10px;padding:14px 18px;cursor:pointer;margin-bottom:20px;transition:all .2s;font-family:'DM Sans',sans-serif}
+.ai-prompt-btn:hover{border-color:rgba(232,255,71,0.45);background:linear-gradient(135deg,rgba(232,255,71,0.11) 0%,rgba(71,200,255,0.08) 100%)}
+.ai-prompt-btn-left{display:flex;align-items:center;gap:12px}
+.ai-prompt-btn-icon{font-size:1.6rem}
+.ai-prompt-btn-title{font-size:0.9rem;font-weight:700;color:var(--accent);display:block}
+.ai-prompt-btn-sub{font-size:0.74rem;color:var(--muted2);display:block;margin-top:2px}
+.ai-prompt-btn-arrow{color:var(--accent);font-size:1.1rem}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:680px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:modal-in .25s ease}
+@keyframes modal-in{from{opacity:0;transform:scale(.95) translateY(16px)}to{opacity:1;transform:none}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.08em}
+.modal-title span{color:var(--accent)}
+.modal-close{width:30px;height:30px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);color:var(--muted2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:'DM Sans',sans-serif}
+.modal-close:hover{background:var(--border);color:var(--text)}
+.modal-body{padding:18px 22px;overflow-y:auto;flex:1}
+.modal-step{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 17px;margin-bottom:12px}
+.modal-step-label{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.modal-step p{font-size:0.84rem;color:var(--muted2);font-weight:300;line-height:1.6;margin-bottom:8px}
+.modal-step p:last-child{margin-bottom:0}
+.modal-step strong{color:var(--text)}
+.topic-row{display:flex;gap:8px;margin-bottom:10px}
+.topic-row input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:9px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;transition:border-color .2s}
+.topic-row input:focus{border-color:rgba(232,255,71,0.4)}
+.topic-row input::placeholder{color:var(--muted)}
+.prompt-box{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px;font-family:'DM Mono',monospace;font-size:0.73rem;color:var(--text);line-height:1.75;white-space:pre-wrap;max-height:260px;overflow-y:auto;margin-bottom:10px}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:9px;flex-shrink:0;flex-wrap:wrap;align-items:center}
+.copy-success{font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--success);display:none;align-items:center;gap:5px}
+.copy-success.shown{display:flex}
+.ai-links{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.ai-link{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:6px;font-size:0.77rem;font-weight:600;text-decoration:none;transition:opacity .2s;border:1px solid var(--border);color:var(--text)}
+.ai-link:hover{opacity:.8}
+.ai-link.chatgpt{background:rgba(16,163,127,0.12);border-color:rgba(16,163,127,0.28);color:#10a37f}
+.ai-link.claude{background:rgba(232,150,71,0.1);border-color:rgba(232,150,71,0.28);color:#e89647}
+.ai-link.gemini{background:rgba(71,200,255,0.09);border-color:rgba(71,200,255,0.25);color:var(--accent2)}
+
+/* PREVIEW */
+.preview-toolbar{display:flex;align-items:center;justify-content:space-between;padding:11px 22px;background:var(--surface2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.preview-label{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+.preview-url{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--accent);letter-spacing:0.04em}
+#previewFrame{width:100%;height:calc(100vh - 64px - 45px);border:none;background:#080a0f}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:calc(100vh - 64px - 45px);color:var(--muted);text-align:center;padding:40px;gap:14px}
+.empty-icon{font-size:3rem;opacity:.25}
+.empty-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.06em;color:var(--muted)}
+.empty-desc{font-size:0.84rem;color:var(--muted);max-width:240px;line-height:1.6}
+
+/* CHAR COUNT */
+.char-count{font-size:0.71rem;color:var(--muted);text-align:right;margin-top:3px;font-family:'DM Mono',monospace}
+.char-count.over{color:var(--error)}
+
+@media(max-width:900px){
+  .app-wrap{grid-template-columns:1fr}
+  .panel-left{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--border)}
+  .panel-right{min-height:60vh}
+  #previewFrame{height:60vh}
+  nav{padding:0 20px}
+  .field-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ── AI PROMPT MODAL ── -->
+<div class="modal-overlay" id="aiModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Generate with <span>AI</span></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-step">
+        <div class="modal-step-label">Step 1 — Enter Your Topic</div>
+        <p>Type your article topic and keyword below. The prompt will update automatically.</p>
+        <div class="topic-row">
+          <input type="text" id="modalTopic" placeholder="e.g. How to grow TikTok followers fast" oninput="updatePrompt()">
+        </div>
+        <div class="topic-row">
+          <input type="text" id="modalKeyword" placeholder="Main keyword e.g. grow TikTok followers" oninput="updatePrompt()">
+        </div>
+      </div>
+
+      <div class="modal-step">
+        <div class="modal-step-label">Step 2 — Copy This Prompt</div>
+        <p>This prompt is pre-formatted for your Article Formatter. Copy it and paste into any AI tool below.</p>
+        <div class="prompt-box" id="promptBox"></div>
+        <div class="ai-links">
+          <a class="ai-link chatgpt" href="https://chat.openai.com" target="_blank">🤖 Open ChatGPT</a>
+          <a class="ai-link claude" href="https://claude.ai" target="_blank">🧠 Open Claude</a>
+          <a class="ai-link gemini" href="https://gemini.google.com" target="_blank">💎 Open Gemini</a>
+        </div>
+      </div>
+
+      <div class="modal-step">
+        <div class="modal-step-label">Step 3 — Paste AI Output Here</div>
+        <p>Once the AI writes your article, copy the <strong>article body</strong> and paste it into the Article Body field. Copy the <strong>TITLE, META, KEYWORDS, SLUG</strong> lines into their fields too.</p>
+        <p>The AI output will already use <strong>## headings</strong>, <strong>**bold**</strong>, <strong>- bullets</strong>, <strong>[TIP]</strong> and <strong>[CTA]</strong> — so it works perfectly with the formatter.</p>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-accent" onclick="copyPrompt()">⎘ Copy Prompt</button>
+      <button class="btn btn-outline" onclick="closeModal()">Done</button>
+      <span class="copy-success" id="copySuccess">✓ Copied to clipboard!</span>
+    </div>
+  </div>
+</div>
+
+<!-- INDEX CODE MODAL -->
+<div class="index-modal-overlay" id="indexModal">
+  <div class="index-modal">
+    <div class="index-modal-header">
+      <div class="index-modal-title">Add to <span>Articles Page</span></div>
+      <button class="modal-close" onclick="closeIndexModal()">✕</button>
+    </div>
+    <div class="index-modal-body">
+      <p class="index-modal-desc">
+        Copy the code below and paste it into your <strong>articles/index.html</strong> file on GitHub — inside the <strong>ARTICLES array</strong>, after the last article entry. Add a comma after the previous entry first.
+      </p>
+      <div class="index-code-box" id="indexCodeBox"></div>
+      <div class="index-steps">
+        <div class="index-step"><span class="index-step-num">1</span><span>Go to GitHub → open <strong>articles/index.html</strong> → tap the pencil ✏️</span></div>
+        <div class="index-step"><span class="index-step-num">2</span><span>Find the <strong>ARTICLES = [</strong> section near the bottom</span></div>
+        <div class="index-step"><span class="index-step-num">3</span><span>Add a <strong>comma</strong> after the closing <strong>}</strong> of the last article</span></div>
+        <div class="index-step"><span class="index-step-num">4</span><span>Paste the code above after that comma</span></div>
+        <div class="index-step"><span class="index-step-num">5</span><span>Tap <strong>Commit changes</strong> — your article card appears instantly</span></div>
+      </div>
+    </div>
+    <div class="index-modal-footer">
+      <button class="btn btn-accent" onclick="copyIndexCode()">⎘ Copy Code</button>
+      <button class="btn btn-outline" onclick="closeIndexModal()">Done</button>
+      <span class="copy-success" id="indexCopySuccess">✓ Copied!</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">Ultimate<span>Edge</span></a>
+  <span class="nav-tag">Article Formatter Tool</span>
+</nav>
+
+<div class="app-wrap">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <div class="panel-left">
+
+    <div class="panel-header">
+      <div class="panel-label">Article Details</div>
+      <div class="step-badge">Fill → Preview → Download</div>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div class="instructions">
+      <div class="instructions-title">How It Works</div>
+      <ol>
+        <li>Use the <strong>Generate with AI</strong> button to get a ready-written article</li>
+        <li>Paste the article into the fields below</li>
+        <li>Tap <strong>Preview</strong> to see how it looks</li>
+        <li>Tap <strong>Download HTML</strong> and upload to GitHub</li>
+      </ol>
+    </div>
+
+    <!-- AI PROMPT BUTTON -->
+    <button class="ai-prompt-btn" onclick="openModal()">
+      <div class="ai-prompt-btn-left">
+        <span class="ai-prompt-btn-icon">🤖</span>
+        <div>
+          <span class="ai-prompt-btn-title">Generate with AI</span>
+          <span class="ai-prompt-btn-sub">Get a ready-formatted article from ChatGPT, Claude or Gemini</span>
+        </div>
+      </div>
+      <span class="ai-prompt-btn-arrow">→</span>
+    </button>
+
+    <!-- TITLE -->
+    <div class="field">
+      <div class="field-label">Article Title <span class="required">*</span></div>
+      <div class="field-hint">Keep under 60 characters for best Google display</div>
+      <input type="text" id="articleTitle" placeholder="e.g. How to Write Viral TikTok Hooks in 2026" maxlength="100" oninput="updateCharCount('articleTitle','titleCount',60);autoSlug()">
+      <div class="char-count" id="titleCount">0 / 60</div>
+    </div>
+
+    <!-- META -->
+    <div class="field">
+      <div class="field-label">Meta Description <span class="required">*</span></div>
+      <div class="field-hint">Shown in Google search results. Keep under 155 characters.</div>
+      <textarea id="metaDesc" rows="3" placeholder="A short summary shown in Google search results..." maxlength="200" oninput="updateCharCount('metaDesc','metaCount',155)"></textarea>
+      <div class="char-count" id="metaCount">0 / 155</div>
+    </div>
+
+    <!-- KEYWORDS -->
+    <div class="field">
+      <div class="field-label">Target Keywords <span class="required">*</span></div>
+      <div class="field-hint">Separate with commas. First keyword is your main focus.</div>
+      <input type="text" id="keywords" placeholder="e.g. viral TikTok hooks, AI tools for creators, TikTok script generator">
+    </div>
+
+    <!-- CATEGORY + READ TIME -->
+    <div class="field">
+      <div class="field-label">Category</div>
+      <div class="cat-pills" id="catPills">
+        <div class="cat-pill active" onclick="selectCat(this,'AI Tools')">AI Tools</div>
+        <div class="cat-pill" onclick="selectCat(this,'Content Strategy')">Content Strategy</div>
+        <div class="cat-pill" onclick="selectCat(this,'Forex & Trading')">Forex</div>
+        <div class="cat-pill" onclick="selectCat(this,'Education')">Education</div>
+        <div class="cat-pill" onclick="selectCat(this,'Tools')">Tools</div>
+        <div class="cat-pill" onclick="selectCat(this,'Growth')">Growth</div>
+        <div class="cat-pill" onclick="selectCat(this,'Monetisation')">Monetisation</div>
+      </div>
+    </div>
+
+    <div class="field" style="max-width:120px">
+      <div class="field-label">Read Time (mins)</div>
+      <input type="text" id="readTime" value="" placeholder="Auto (calculated from words)">
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-label">Article Content</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- BODY -->
+    <div class="field">
+      <div class="field-label">Article Body <span class="required">*</span></div>
+      <div class="field-hint">
+        Formatting codes:<br>
+        <code>## Heading</code> → Section &nbsp;|&nbsp; <code>### Sub</code> → Sub-heading<br>
+        <code>- Item</code> → Bullet &nbsp;|&nbsp; <code>1. Item</code> → Numbered list<br>
+        <code>**bold**</code> → Bold &nbsp;|&nbsp; <code>[TIP] your tip</code> → Callout box<br>
+        <code>[CTA] Button Text | https://url.com</code> → CTA button
+      </div>
+      <textarea class="tall" id="articleBody" placeholder="Paste your AI-generated article here...
+
+## Why This Topic Matters
+
+Write your intro paragraph here. Mention your main keyword naturally in the first two sentences.
+
+## First Main Section
+
+Your content here. Use **bold text** for key points.
+
+- Bullet one
+- Bullet two
+
+[TIP] Add a helpful tip here to break up the content and add value.
+
+## Second Section
+
+More content with 1. numbered 2. lists 3. where useful
+
+[CTA] Get the TikTok Creator Prompt Pack | https://selar.com/7o17517y15"></textarea>
+    </div>
+
+    <!-- URL SLUG -->
+    <div class="field">
+      <div class="field-label">URL Slug</div>
+      <div class="field-hint">Auto-generated from title. Edit if needed. This becomes the page URL on your site.</div>
+      <input type="text" id="urlSlug" placeholder="your-article-slug-here">
+      <div style="margin-top:6px;font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);word-break:break-all" id="slugPreviewLine">
+        ultimateedge.info/articles/<span id="slugPreviewInline" style="color:var(--accent)">your-article-slug-here</span>/index.html
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+      <button class="btn btn-outline" onclick="generatePreview()">👁 Preview</button>
+      <button class="btn btn-accent" onclick="downloadHTML()">⬇ Download HTML</button>
+      <button class="btn btn-blue" onclick="showIndexCode()">📋 Add to Articles Page</button>
+      <button class="btn btn-outline" onclick="clearAll()">✕ Clear</button>
+    </div>
+
+    <div class="status-bar" id="statusBar">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Use the Generate with AI button to get started</span>
+    </div>
+
+  </div>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <div class="panel-right">
+    <div class="preview-toolbar">
+      <span class="preview-label">Live Preview</span>
+      <span class="preview-url" id="previewUrl">ultimateedge.info/articles/...</span>
+    </div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📄</div>
+      <div class="empty-title">Preview Here</div>
+      <p class="empty-desc">Fill in the fields and tap Preview to see your article</p>
+    </div>
+    <iframe id="previewFrame" style="display:none"></iframe>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ──
+let selectedCat = 'AI Tools';
+
+// ── MASTER AI PROMPT ──
+function buildAIPrompt(topic, keyword) {
+  topic = topic || '[YOUR TOPIC]';
+  keyword = keyword || '[YOUR KEYWORD]';
+  return `You are an SEO content writer for UltimateEdge.info — a website providing free AI tools, math calculators, and trading resources for content creators and modern thinkers.
+
+Write a complete blog article using EXACTLY the formatting rules below.
+
+═══ ARTICLE DETAILS ═══
+Topic: ${topic}
+Target keyword: ${keyword}
+Word count: 1,200 to 1,500 words
+Audience: Content creators, entrepreneurs, students aged 18-35
+
+═══ FORMATTING RULES — FOLLOW EXACTLY ═══
+- Use ## for all main section headings
+- Use ### for sub-headings
+- Use - for bullet points
+- Use 1. 2. 3. for numbered lists
+- Use **text** for bold
+- Use [TIP] at the start of a line for callout/tip boxes
+- Use [CTA] Button Text | URL for call to action buttons
+
+═══ ARTICLE STRUCTURE ═══
+1. Opening paragraph (no heading) — mention main keyword in first 2 sentences
+
+2. ## Why [Topic] Matters
+   Explain the problem or opportunity clearly
+
+3. ## [First Main Section]
+   Core value content with bullet points or numbered list
+
+4. [TIP] A practical actionable tip
+
+5. ## [Second Main Section]
+   Deeper content using **bold** for key points
+
+6. ## [Third Main Section]
+   Step-by-step or list format where relevant
+
+7. [TIP] Another insight or warning
+
+8. ## How UltimateEdge Tools Can Help
+   Mention 1-2 free tools from ultimateedge.info relevant to this topic
+
+9. [CTA] Get the TikTok Creator Prompt Pack — ₦7,500 | https://selar.com/7o17517y15
+
+10. ## Final Thoughts
+    Encouraging conclusion. Mention the main keyword once more naturally.
+
+═══ TONE RULES ═══
+- Conversational but knowledgeable — like a smart friend
+- Short punchy sentences mixed with longer ones
+- No corporate language or jargon
+- Use "you" and "your" throughout
+- Never start with "In conclusion" or "In summary"
+
+═══ AFTER THE ARTICLE OUTPUT THESE EXACTLY ═══
+TITLE: [SEO title under 60 characters]
+META: [meta description under 155 characters]
+KEYWORDS: [5 keywords separated by commas]
+SLUG: [url-friendly-slug-with-dashes]
+CATEGORY: [one of: AI Tools, Content Strategy, Forex & Trading, Education, Tools, Growth, Monetisation]`;
+}
+
+// ── MODAL ──
+function openModal() {
+  document.getElementById('aiModal').classList.add('open');
+  updatePrompt();
+}
+function closeModal() {
+  document.getElementById('aiModal').classList.remove('open');
+}
+function updatePrompt() {
+  const topic = document.getElementById('modalTopic').value;
+  const kw = document.getElementById('modalKeyword').value;
+  document.getElementById('promptBox').textContent = buildAIPrompt(topic, kw);
+}
+function copyPrompt() {
+  const text = document.getElementById('promptBox').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('copySuccess');
+    el.classList.add('shown');
+    setTimeout(() => el.classList.remove('shown'), 3000);
+  });
+}
+// Close modal on overlay click
+document.getElementById('aiModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+// Init prompt on load
+updatePrompt();
+
+// ── CATEGORY ──
+function selectCat(el, cat) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  selectedCat = cat;
+}
+
+// ── CHAR COUNTER ──
+function updateCharCount(id, countId, limit) {
+  const val = document.getElementById(id).value.length;
+  const el = document.getElementById(countId);
+  el.textContent = val + ' / ' + limit;
+  el.className = 'char-count' + (val > limit ? ' over' : '');
+}
+
+// ── AUTO SLUG ──
+function autoSlug() {
+  const title = document.getElementById('articleTitle').value;
+  const slug = title.toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-').trim();
+  document.getElementById('urlSlug').value = slug;
+  updateSlugDisplay(slug);
+}
+
+function updateSlugDisplay(slug) {
+  const display = slug || 'your-article-slug-here';
+  // Top preview bar
+  document.getElementById('previewUrl').textContent = 'ultimateedge.info/articles/' + (slug || '...');
+  // Inline slug preview under field
+  const inlineEl = document.getElementById('slugPreviewInline');
+  if (inlineEl) inlineEl.textContent = display;
+}
+
+// Keep slug preview in sync when slug field is edited manually
+document.addEventListener('DOMContentLoaded', function() {
+  const slugField = document.getElementById('urlSlug');
+  if (slugField) {
+    slugField.addEventListener('input', function() {
+      updateSlugDisplay(this.value.trim());
+    });
+  }
+});
+
+// ── PARSE CONTENT ──
+function parseContent(raw) {
+  const lines = raw.split('\n');
+  let html = '', inUl = false, inOl = false;
+  function closeLists() {
+    if (inUl) { html += '</ul>'; inUl = false; }
+    if (inOl) { html += '</ol>'; inOl = false; }
+  }
+  lines.forEach(line => {
+    const t = line.trim();
+    if (t.startsWith('[CTA]')) {
+      closeLists();
+      const parts = t.replace('[CTA]','').split('|');
+      const btnText = (parts[0]||'Learn More').trim();
+      const btnUrl = (parts[1]||'#').trim();
+      html += `<div class="article-cta"><a href="${btnUrl}" target="_blank" class="btn-primary">${btnText} <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div>`;
+      return;
+    }
+    if (t.startsWith('[TIP]')) {
+      closeLists();
+      html += `<div class="callout"><div class="callout-title">💡 Pro Tip</div><p>${inline(t.replace('[TIP]','').trim())}</p></div>`;
+      return;
+    }
+    if (t.startsWith('## ')) {
+      closeLists();
+      const id = t.replace('## ','').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+      html += `<h2 id="${id}">${inline(t.replace('## ',''))}</h2>`;
+      return;
+    }
+    if (t.startsWith('### ')) {
+      closeLists();
+      html += `<h3>${inline(t.replace('### ',''))}</h3>`;
+      return;
+    }
+    if (/^[-*]\s/.test(t)) {
+      if (inOl){html+='</ol>';inOl=false;}
+      if (!inUl){html+='<ul>';inUl=true;}
+      html += `<li>${inline(t.replace(/^[-*]\s/,''))}</li>`;
+      return;
+    }
+    if (/^\d+\.\s/.test(t)) {
+      if (inUl){html+='</ul>';inUl=false;}
+      if (!inOl){html+='<ol>';inOl=true;}
+      html += `<li>${inline(t.replace(/^\d+\.\s/,''))}</li>`;
+      return;
+    }
+    if (t === '') { closeLists(); return; }
+    closeLists();
+    html += `<p>${inline(t)}</p>`;
+  });
+  closeLists();
+  return html;
+}
+
+function inline(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>');
+}
+
+function esc(t) {
+  return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── BUILD HTML ──
+function buildHTML() {
+  const title = document.getElementById('articleTitle').value.trim();
+  const meta = document.getElementById('metaDesc').value.trim();
+  const kw = document.getElementById('keywords').value.trim();
+  const body = document.getElementById('articleBody').value.trim();
+  const slug = document.getElementById('urlSlug').value.trim();
+  const readTimeRaw = document.getElementById('readTime').value.trim();
+  const wordCount = body.trim().split(/\s+/).filter(Boolean).length;
+  const autoReadTime = Math.max(1, Math.round(wordCount / 200));
+  const readTime = (readTimeRaw && !isNaN(readTimeRaw) && Number(readTimeRaw) > 0) ? readTimeRaw : String(autoReadTime);
+  const cat = selectedCat;
+  const today = new Date().toISOString().split('T')[0];
+  const todayFmt = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const url = `https://ultimateedge.info/articles/${slug}`;
+  const parsed = parseContent(body);
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(title)} | UltimateEdge</title>
+<meta name="description" content="${esc(meta)}">
+<meta name="keywords" content="${esc(kw)}">
+<meta name="author" content="UltimateEdge">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="${url}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(meta)}">
+<meta property="og:url" content="${url}">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="UltimateEdge">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"${esc(title)}","description":"${esc(meta)}","author":{"@type":"Organization","name":"UltimateEdge"},"publisher":{"@type":"Organization","name":"UltimateEdge","url":"https://ultimateedge.info"},"datePublished":"${today}","dateModified":"${today}","url":"${url}"}<\/script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080a0f;--surface:#0e1117;--surface2:#151821;--border:rgba(255,255,255,0.07);--accent:#e8ff47;--accent2:#47c8ff;--text:#f0f2f7;--muted:#6b7280;--muted2:#8892a4;--content-width:720px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:17px;line-height:1.75;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(8,10,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.12em;color:var(--text);text-decoration:none}.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{color:var(--muted2);text-decoration:none;font-size:0.85rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;transition:color .2s}.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--accent)!important;color:#080a0f!important;padding:7px 18px;border-radius:4px;font-weight:700!important}
+.article-hero{padding:120px 40px 60px;max-width:900px;margin:0 auto}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:28px}
+.breadcrumb a{color:var(--muted);text-decoration:none;transition:color .2s}.breadcrumb a:hover{color:var(--accent)}
+.article-tag{display:inline-flex;align-items:center;background:rgba(232,255,71,0.08);border:1px solid rgba(232,255,71,0.2);padding:5px 14px;border-radius:100px;font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.12em;color:var(--accent);text-transform:uppercase;margin-bottom:20px}
+.article-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,6vw,4.2rem);line-height:1;letter-spacing:0.03em;margin-bottom:20px}
+.article-intro{font-size:1.15rem;color:var(--muted2);font-weight:300;line-height:1.7;max-width:680px;margin-bottom:32px}
+.article-meta{display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;color:var(--muted)}
+.meta-item{display:flex;align-items:center;gap:6px}.meta-dot{color:var(--accent)}
+.article-body{max-width:var(--content-width);margin:0 auto;padding:0 40px 80px}
+.article-body h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,3vw,2.4rem);letter-spacing:0.04em;line-height:1;margin:56px 0 20px;color:var(--text);padding-top:20px;border-top:1px solid var(--border)}
+.article-body h3{font-size:1.15rem;font-weight:700;margin:32px 0 12px;color:var(--text)}
+.article-body p{color:var(--muted2);margin-bottom:20px;font-weight:300;font-size:1rem}
+.article-body strong{color:var(--text);font-weight:600}
+.article-body a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(232,255,71,0.3);transition:border-color .2s}.article-body a:hover{border-color:var(--accent)}
+.article-body ul{list-style:none;padding-left:0;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.article-body ul li{display:flex;gap:12px;align-items:flex-start;font-size:0.97rem;color:var(--muted2);font-weight:300}
+.article-body ul li::before{content:'→';color:var(--accent);flex-shrink:0;font-weight:700}
+.article-body ol{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:24px;counter-reset:list-item}
+.article-body ol li{display:flex;gap:14px;align-items:flex-start;font-size:0.97rem;color:var(--muted2);font-weight:300}
+.article-body ol li::before{content:counter(list-item,decimal-leading-zero);counter-increment:list-item;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--accent);flex-shrink:0;background:rgba(232,255,71,0.08);border:1px solid rgba(232,255,71,0.15);padding:2px 8px;border-radius:3px;margin-top:2px}
+.callout{background:rgba(232,255,71,0.05);border:1px solid rgba(232,255,71,0.15);border-radius:10px;padding:24px 28px;margin:32px 0}
+.callout-title{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.callout p{font-size:0.92rem;margin-bottom:0;color:var(--text)!important}
+.article-cta{background:var(--surface2);border:1px solid rgba(232,255,71,0.15);border-radius:16px;padding:48px 40px;text-align:center;margin:56px 0;position:relative;overflow:hidden}
+.article-cta::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(ellipse,rgba(232,255,71,0.08) 0%,transparent 70%);pointer-events:none}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#080a0f;font-weight:700;font-size:0.9rem;letter-spacing:0.05em;padding:14px 32px;border-radius:4px;text-decoration:none;border:none!important;transition:transform .2s,opacity .2s}.btn-primary:hover{transform:translateY(-2px);opacity:.9}
+footer{border-top:1px solid var(--border);padding:48px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.1em;color:var(--text);text-decoration:none}.footer-logo span{color:var(--accent)}
+.footer-links{display:flex;gap:28px;list-style:none}.footer-links a{color:var(--muted);text-decoration:none;font-size:0.83rem;transition:color .2s}.footer-links a:hover{color:var(--text)}
+.footer-copy{font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:768px){nav{padding:0 20px}.nav-links{display:none}.article-hero{padding:100px 20px 40px}.article-body{padding:0 20px 60px}.article-cta{padding:36px 24px}footer{flex-direction:column;align-items:flex-start;padding:40px 20px}.footer-links{flex-wrap:wrap;gap:16px}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">Ultimate<span>Edge</span></a>
+  <ul class="nav-links">
+    <li><a href="/#tools">Tools</a></li>
+    <li><a href="/articles">Articles</a></li>
+    <li><a href="https://selar.com/7o17517y15" target="_blank">Prompt Pack</a></li>
+    <li><a href="/promptedge-pro" class="nav-cta">Go Pro ⚡</a></li>
+  </ul>
+</nav>
+<div class="article-hero">
+  <div class="breadcrumb"><a href="/">Home</a><span>›</span><a href="/articles">Articles</a><span>›</span><span>${esc(title)}</span></div>
+  <div class="article-tag">${esc(cat)}</div>
+  <h1 class="article-title">${esc(title)}</h1>
+  <p class="article-intro">${esc(meta)}</p>
+  <div class="article-meta">
+    <div class="meta-item"><span class="meta-dot">◆</span> By UltimateEdge</div>
+    <div class="meta-item"><span class="meta-dot">◆</span> ${todayFmt}</div>
+    <div class="meta-item"><span class="meta-dot">◆</span> ${readTime} min read</div>
+    <div class="meta-item"><span class="meta-dot">◆</span> ${esc(cat)}</div>
+  </div>
+</div>
+<div class="article-body reveal">${parsed}</div>
+<footer>
+  <a href="/" class="footer-logo">Ultimate<span>Edge</span></a>
+  <ul class="footer-links">
+    <li><a href="/#tools">Tools</a></li><li><a href="/articles">Articles</a></li>
+    <li><a href="https://selar.com/7o17517y15" target="_blank">Prompt Pack</a></li>
+    <li><a href="/promptedge-pro">Go Pro</a></li><li><a href="/about">About</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 UltimateEdge.info · Built by Solomon</div>
+</footer>
+<script>
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*80);obs.unobserve(e.target)}})},{threshold:0.1});
+reveals.forEach(el=>obs.observe(el));
+<\/script>
+</body>
+</html>`;
+}
+
+// ── VALIDATE ──
+function validate() {
+  if (!document.getElementById('articleTitle').value.trim()) return 'Please enter an article title';
+  if (!document.getElementById('metaDesc').value.trim()) return 'Please enter a meta description';
+  if (!document.getElementById('articleBody').value.trim()) return 'Please enter your article content';
+  return null;
+}
+
+// ── STATUS ──
+function setStatus(msg, type) {
+  document.getElementById('statusDot').className = 'status-dot' + (type==='ready' ? ' ready' : type==='error' ? ' error' : '');
+  document.getElementById('statusText').textContent = msg;
+}
+
+// ── PREVIEW ──
+function generatePreview() {
+  const err = validate();
+  if (err) { setStatus(err, 'error'); return; }
+  const frame = document.getElementById('previewFrame');
+  document.getElementById('emptyState').style.display = 'none';
+  frame.style.display = 'block';
+  frame.srcdoc = buildHTML();
+  setStatus('Preview ready! Tap Download HTML when you\'re happy.', 'ready');
+}
+
+// ── DOWNLOAD ──
+function downloadHTML() {
+  const err = validate();
+  if (err) { setStatus(err, 'error'); return; }
+  const slug = document.getElementById('urlSlug').value.trim() || 'article';
+  const blob = new Blob([buildHTML()], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'index.html'; a.click();
+  URL.revokeObjectURL(url);
+  setStatus('Downloaded! Upload to GitHub at: articles/' + slug + '/index.html', 'ready');
+}
+
+// ── CLEAR ──
+function clearAll() {
+  if (!confirm('Clear all fields?')) return;
+  ['articleTitle','metaDesc','keywords','articleBody','urlSlug'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('readTime').value = '';
+  document.getElementById('previewUrl').textContent = 'ultimateedge.info/articles/...';
+  document.getElementById('previewFrame').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('titleCount').textContent = '0 / 60';
+  document.getElementById('metaCount').textContent = '0 / 155';
+  setStatus('Cleared. Ready for a new article.', '');
+}
+
+
+// ── INDEX CODE MODAL ──
+const catEmojis = { 'AI Tools':'⚡', 'Content Strategy':'🎣', 'Forex & Trading':'📈', 'Education':'📚', 'Tools':'🛠', 'Growth':'🚀', 'Monetisation':'💰' };
+const catColors = { 'AI Tools':'#e8ff47', 'Content Strategy':'#47c8ff', 'Forex & Trading':'#ff6b47', 'Education':'#b47fff', 'Tools':'#47ffb4', 'Growth':'#ffb347', 'Monetisation':'#ff47a3' };
+const catGlows = { 'AI Tools':'rgba(232,255,71,0.06)', 'Content Strategy':'rgba(71,200,255,0.06)', 'Forex & Trading':'rgba(255,107,71,0.06)', 'Education':'rgba(180,127,255,0.06)', 'Tools':'rgba(71,255,180,0.06)', 'Growth':'rgba(255,179,71,0.06)', 'Monetisation':'rgba(255,71,163,0.06)' };
+const catKeys = { 'AI Tools':'ai-tools', 'Content Strategy':'content-strategy', 'Forex & Trading':'forex', 'Education':'education', 'Tools':'tools', 'Growth':'growth', 'Monetisation':'growth' };
+
+function showIndexCode() {
+  const err = validate();
+  if (err) { setStatus(err, 'error'); return; }
+
+  const title = document.getElementById('articleTitle').value.trim();
+  const meta = document.getElementById('metaDesc').value.trim();
+  const slug = document.getElementById('urlSlug').value.trim() || 'article';
+  const rt = document.getElementById('readTime').value.trim() || '5';
+  const cat = selectedCat;
+  const today = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+  const emoji = catEmojis[cat] || '📄';
+  const color = catColors[cat] || '#e8ff47';
+  const glow = catGlows[cat] || 'rgba(232,255,71,0.06)';
+  const catKey = catKeys[cat] || 'ai-tools';
+
+  const code = `{
+  slug: '/articles/${slug}',
+  title: '${title.replace(/'/g, "\'")  }',
+  desc: '${meta.replace(/'/g, "\'").substring(0,120)}',
+  cat: '${catKey}',
+  catLabel: '${cat}',
+  date: '${today}',
+  readTime: '${rt}',
+  emoji: '${emoji}',
+  color: '${color}',
+  glow: '${glow}',
+  featured: false,
+  live: true
+}`;
+
+  document.getElementById('indexCodeBox').textContent = code;
+  document.getElementById('indexModal').classList.add('open');
+}
+
+function closeIndexModal() {
+  document.getElementById('indexModal').classList.remove('open');
+}
+
+function copyIndexCode() {
+  const text = document.getElementById('indexCodeBox').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('indexCopySuccess');
+    el.classList.add('shown');
+    setTimeout(() => el.classList.remove('shown'), 2500);
+  });
+}
+
+document.getElementById('indexModal').addEventListener('click', function(e) {
+  if (e.target === this) closeIndexModal();
+});
+
+</script>
+</body>
+</html>
